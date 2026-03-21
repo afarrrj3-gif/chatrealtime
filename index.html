@@ -3,58 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Telegram Clone</title>
+    <title>Rekber MC - Middleman Chat</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- Login Page -->
+<!-- HALAMAN LOGIN/SETUP -->
 <div id="login-page">
-    <div class="login-box">
-        <div class="logo">💬</div>
-        <h1>Telegram Clone</h1>
-        <p class="subtitle">Room Code (6 Digit Angka)</p>
+    <div class="rekber-container">
+        <div class="logo-rekber">🛡️</div>
+        <h1>Rekber MC</h1>
+        <p class="subtitle">Middleman Transaction Center</p>
         
-        <input type="text" id="username" placeholder="Nama Anda" maxlength="20" autocomplete="off">
-        <input type="number" id="room-input" placeholder="Contoh: 009898" maxlength="6" autocomplete="off">
-        
-        <button class="btn-primary" onclick="joinRoom()">Gabung ke Room</button>
-        <button class="btn-secondary" onclick="createRoom()">Buat Room Baru</button>
-        
-        <div id="new-room-display" class="room-display hidden">
-            <div class="room-label">Room Code Anda:</div>
-            <div class="room-code" id="generated-code"></div>
-            <button class="btn-primary" onclick="enterRoom()" style="margin-top: 15px;">Masuk Room</button>
+        <!-- Step 1: Nama & Role -->
+        <div id="step-role">
+            <input type="text" id="username" placeholder="Nama Lengkap" maxlength="20">
+            
+            <div class="role-selector">
+                <p class="label">Pilih Peran:</p>
+                <div class="role-buttons">
+                    <button type="button" class="role-btn" onclick="selectRole('buyer')" id="btn-buyer">
+                        <span class="role-icon">🛒</span>
+                        <span>Buyer (Pembeli)</span>
+                    </button>
+                    <button type="button" class="role-btn" onclick="selectRole('seller')" id="btn-seller">
+                        <span class="role-icon">🏪</span>
+                        <span>Seller (Penjual)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2A: Form Buyer -->
+        <div id="form-buyer" class="hidden">
+            <div class="back-link" onclick="backToRole()">‹ Kembali</div>
+            <h3>Masuk sebagai Buyer</h3>
+            
+            <div class="input-group">
+                <label>Nomor WhatsApp <span class="required">*</span></label>
+                <input type="tel" id="buyer-wa" placeholder="08xxxxxxxxxx" maxlength="15">
+            </div>
+            
+            <div class="input-group">
+                <label>Kode Room <span class="required">*</span></label>
+                <input type="number" id="buyer-code" placeholder="Masukkan 6 digit angka" maxlength="6" oninput="validateBuyerCode()">
+                <small class="hint">Kode dari Seller (6 digit angka)</small>
+            </div>
+            
+            <button id="btn-join-buyer" class="btn-primary" onclick="showJoinModal()" disabled>
+                Masuk Room
+            </button>
+        </div>
+
+        <!-- Step 2B: Form Seller -->
+        <div id="form-seller" class="hidden">
+            <div class="back-link" onclick="backToRole()">‹ Kembali</div>
+            <h3>Buat Room sebagai Seller</h3>
+            
+            <div class="input-group">
+                <label>Nominal Transaksi <span class="required">*</span></label>
+                <input type="text" id="nominal" placeholder="50000" oninput="formatRupiah(this)">
+                <div class="rupiah-display" id="rupiah-display">Rp0</div>
+            </div>
+            
+            <div class="input-group">
+                <label>Tipe Transaksi <span class="required">*</span></label>
+                <div class="inc-ex-selector">
+                    <button type="button" class="inc-btn" onclick="selectIncExc('inc')">INC</button>
+                    <button type="button" class="exc-btn" onclick="selectIncExc('exc')">EXC</button>
+                </div>
+                <input type="hidden" id="inc-exc-value">
+            </div>
+            
+            <div class="input-group">
+                <label>Nomor WhatsApp <span class="required">*</span></label>
+                <input type="tel" id="seller-wa" placeholder="08xxxxxxxxxx" maxlength="15" oninput="validateSellerForm()">
+            </div>
+            
+            <button id="btn-create-room" class="btn-success" onclick="createSellerRoom()" disabled>
+                Buat Room
+            </button>
+            
+            <!-- Hasil Room Code -->
+            <div id="seller-result" class="hidden result-box">
+                <div class="result-label">Room Code:</div>
+                <div class="result-code" id="generated-code">000000</div>
+                <button class="btn-copy" onclick="copyCode()">📋 Salin Code</button>
+                <button class="btn-primary" onclick="enterAsSeller()" style="margin-top: 10px;">
+                    Masuk Room
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Chat Page -->
+<!-- MODAL KONFIRMASI BUYER -->
+<div id="modal-join" class="modal hidden">
+    <div class="modal-content">
+        <h3>Konfirmasi Masuk Room</h3>
+        <p>Anda akan masuk sebagai <strong>Buyer</strong></p>
+        <div class="modal-info">
+            <div>Nama: <span id="modal-buyer-name"></span></div>
+            <div>WA: <span id="modal-buyer-wa"></span></div>
+            <div>Room: <span id="modal-buyer-code"></span></div>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-secondary" onclick="closeModal()">Batal</button>
+            <button class="btn-primary" onclick="joinAsBuyer()">Konfirmasi</button>
+        </div>
+    </div>
+</div>
+
+<!-- HALAMAN CHAT -->
 <div id="chat-page" class="hidden">
-    <div class="chat-header">
-        <button class="back-btn" onclick="leaveRoom()">‹</button>
-        <div class="header-info">
-            <div class="header-title" id="current-room">Room</div>
-            <div class="header-status">online</div>
+    <!-- Header Rekber -->
+    <div class="rekber-header">
+        <div class="header-left">
+            <img src="https://res.cloudinary.com/dtdodhqqi/image/upload/v1766845910/IMG-20251128-WA0094_1_rrrhdn.jpg" alt="Admin" class="admin-avatar">
+            <div class="admin-status">
+                <div class="admin-name">Admin MC</div>
+                <div class="admin-online">Online</div>
+            </div>
+        </div>
+        
+        <div class="header-center">
+            <div class="transaction-nominal" id="display-nominal">Rp0</div>
+            <div class="transaction-type" id="display-type">-</div>
+        </div>
+        
+        <div class="header-right">
+            <button class="btn-menu" onclick="showRoomInfo()">⋮</button>
         </div>
     </div>
-    
-    <div id="messages" class="messages-container">
-        <!-- Messages will appear here -->
+
+    <!-- Info Bar (Room Code & Copy) -->
+    <div class="info-bar">
+        <div class="room-info-display">
+            <span>Room:</span>
+            <strong id="chat-room-code">000000</strong>
+            <button onclick="copyRoomCode()" class="btn-copy-small">📋</button>
+        </div>
+        <div class="mc-info">
+            <span>MC: <span id="mc-name">Admin</span></span>
+            <span class="divider">|</span>
+            <span id="inc-exc-display">INC</span>
+        </div>
     </div>
-    
+
+    <!-- Area Chat -->
+    <div id="messages" class="messages-container"></div>
+
+    <!-- Input Area -->
     <div class="input-area">
-        <input type="text" id="message-input" placeholder="Pesan" maxlength="200" autocomplete="off">
-        <button class="send-btn" onclick="sendMessage()">➤</button>
+        <button class="btn-attach" onclick="showFormatMenu()">📎</button>
+        <input type="text" id="message-input" placeholder="Tulis pesan..." maxlength="200">
+        <button class="btn-send" onclick="sendMessage()">➤</button>
+    </div>
+
+    <!-- Format Menu (Popup) -->
+    <div id="format-menu" class="format-popup hidden">
+        <button onclick="insertFormat('payment')">💳 Format Payment</button>
+        <button onclick="insertFormat('done')">✅ Format Done</button>
+        <button onclick="closeFormatMenu()">Tutup</button>
     </div>
 </div>
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
-    // Konfigurasi Firebase
+    // Config Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDpQhIcitZwMMhQIHhpB9rp_k0EpBJT-2k",
         authDomain: "chat-real-time-32576.firebaseapp.com",
@@ -66,21 +185,241 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+    const db = firebase.database();
     
-    let currentRoom = '';
-    let username = '';
-    let roomRef = null;
-    let lastDate = null;
-    
-    // GANTI DENGAN DATA ANDA
+    // Telegram Config
     const BOT_TOKEN = "8672339759:AAF_jy2iB5xZlHh6843s-8RkukvJ5-yROto";
     const CHAT_ID = "7129085772";
     
-    // Hanya notif saat user join (tidak untuk setiap chat)
-    function sendTelegramNotif(user, room) {
-        const text = `🚪 <b>${user}</b> masuk ke room <code>${room}</code>\n\n⏰ ${new Date().toLocaleString('id-ID')}`;
+    let currentRole = '';
+    let currentName = '';
+    let currentRoom = '';
+    let roomData = {};
+    let isAdmin = false;
+    let roomRef = null;
+
+    // Format Rupiah AI
+    function formatRupiah(input) {
+        let value = input.value.replace(/[^0-9]/g, '');
+        input.value = value;
         
+        if (value) {
+            const number = parseInt(value);
+            const formatted = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(number);
+            document.getElementById('rupiah-display').textContent = formatted;
+        } else {
+            document.getElementById('rupiah-display').textContent = 'Rp0';
+        }
+        validateSellerForm();
+    }
+
+    // Select Role
+    function selectRole(role) {
+        currentRole = role;
+        document.getElementById('step-role').classList.add('hidden');
+        
+        if (role === 'buyer') {
+            document.getElementById('form-buyer').classList.remove('hidden');
+        } else {
+            document.getElementById('form-seller').classList.remove('hidden');
+        }
+    }
+
+    function backToRole() {
+        document.getElementById('form-buyer').classList.add('hidden');
+        document.getElementById('form-seller').classList.add('hidden');
+        document.getElementById('step-role').classList.remove('hidden');
+        currentRole = '';
+    }
+
+    // Select INC/EXC
+    function selectIncExc(type) {
+        document.getElementById('inc-exc-value').value = type.toUpperCase();
+        document.querySelectorAll('.inc-ex-selector button').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        event.target.classList.add('selected');
+        validateSellerForm();
+    }
+
+    // Validasi Buyer
+    function validateBuyerCode() {
+        const code = document.getElementById('buyer-code').value;
+        const btn = document.getElementById('btn-join-buyer');
+        btn.disabled = !(code.length === 6 && !isNaN(code));
+    }
+
+    // Validasi Seller
+    function validateSellerForm() {
+        const nominal = document.getElementById('nominal').value;
+        const wa = document.getElementById('seller-wa').value;
+        const incExc = document.getElementById('inc-exc-value').value;
+        const btn = document.getElementById('btn-create-room');
+        
+        btn.disabled = !(nominal && wa && incExc);
+    }
+
+    // Modal Buyer
+    function showJoinModal() {
+        const name = document.getElementById('username').value;
+        const wa = document.getElementById('buyer-wa').value;
+        const code = document.getElementById('buyer-code').value;
+        
+        if (!name || !wa || code.length !== 6) {
+            alert('Lengkapi semua data!');
+            return;
+        }
+        
+        document.getElementById('modal-buyer-name').textContent = name;
+        document.getElementById('modal-buyer-wa').textContent = wa;
+        document.getElementById('modal-buyer-code').textContent = code;
+        document.getElementById('modal-join').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('modal-join').classList.add('hidden');
+    }
+
+    // Create Room Seller
+    function createSellerRoom() {
+        currentName = document.getElementById('username').value;
+        if (!currentName) {
+            alert('Isi nama dulu!');
+            return;
+        }
+        
+        // Generate 6 digit angka
+        const code = String(Math.floor(100000 + Math.random() * 900000));
+        document.getElementById('generated-code').textContent = code;
+        document.getElementById('seller-result').classList.remove('hidden');
+        
+        // Simpan data room sementara
+        roomData = {
+            code: code,
+            nominal: document.getElementById('nominal').value,
+            nominalDisplay: document.getElementById('rupiah-display').textContent,
+            type: document.getElementById('inc-exc-value').value,
+            sellerWa: document.getElementById('seller-wa').value,
+            sellerName: currentName
+        };
+    }
+
+    function copyCode() {
+        const code = document.getElementById('generated-code').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            alert('Room code disalin: ' + code);
+        });
+    }
+
+    function copyRoomCode() {
+        navigator.clipboard.writeText(currentRoom).then(() => {
+            alert('Code disalin: ' + currentRoom);
+        });
+    }
+
+    // Enter as Seller
+    function enterAsSeller() {
+        currentRoom = roomData.code;
+        currentRole = 'seller';
+        setupRoom();
+    }
+
+    // Join as Buyer
+    function joinAsBuyer() {
+        currentName = document.getElementById('username').value;
+        currentRoom = document.getElementById('buyer-code').value;
+        currentRole = 'buyer';
+        closeModal();
+        setupRoom();
+    }
+
+    // Setup Room (Initialize Firebase)
+    function setupRoom() {
+        document.getElementById('login-page').classList.add('hidden');
+        document.getElementById('chat-page').classList.remove('hidden');
+        
+        document.getElementById('chat-room-code').textContent = currentRoom;
+        
+        roomRef = db.ref('rekber_rooms/' + currentRoom);
+        
+        if (currentRole === 'seller') {
+            // Simpan data room
+            roomRef.child('info').set({
+                nominal: roomData.nominal,
+                nominalDisplay: roomData.nominalDisplay,
+                type: roomData.type,
+                sellerWa: roomData.sellerWa,
+                sellerName: roomData.sellerName,
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            });
+            
+            // Auto join Admin
+            roomRef.child('users/admin').set({
+                name: 'Admin MC',
+                role: 'admin',
+                joinedAt: firebase.database.ServerValue.TIMESTAMP
+            });
+            
+            // Display info
+            document.getElementById('display-nominal').textContent = roomData.nominalDisplay;
+            document.getElementById('display-type').textContent = roomData.type;
+            document.getElementById('inc-exc-display').textContent = roomData.type;
+            
+            // Welcome message dari Admin
+            setTimeout(() => {
+                roomRef.child('messages').push({
+                    type: 'admin_welcome',
+                    text: `Halo ${roomData.sellerName}! 👋\n\nSaya Admin MC yang akan menangani transaksi ini.\n\n📋 Detail Transaksi:\n• Nominal: ${roomData.nominalDisplay}\n• Tipe: ${roomData.type}\n• Room: ${currentRoom}\n\nSilakan tunggu buyer join. Jangan kirim barang sebelum buyer payment ya!`,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+            }, 1000);
+            
+            // Notif Telegram untuk Admin (Seller masuk)
+            sendTelegramNotif(`🏪 SELLER JOIN\n\nNama: ${roomData.sellerName}\nWA: ${roomData.sellerWa}\nNominal: ${roomData.nominalDisplay}\nTipe: ${roomData.type}\nRoom: ${currentRoom}`);
+            
+        } else if (currentRole === 'buyer') {
+            const buyerWa = document.getElementById('buyer-wa').value;
+            
+            // Join sebagai buyer
+            roomRef.child('users/buyer').set({
+                name: currentName,
+                wa: buyerWa,
+                role: 'buyer',
+                joinedAt: firebase.database.ServerValue.TIMESTAMP
+            });
+            
+            // Ambil info room
+            roomRef.child('info').once('value', (snapshot) => {
+                const info = snapshot.val();
+                if (info) {
+                    document.getElementById('display-nominal').textContent = info.nominalDisplay || 'Rp0';
+                    document.getElementById('display-type').textContent = info.type || '-';
+                    document.getElementById('inc-exc-display').textContent = info.type || '-';
+                }
+            });
+            
+            // Notif di chat: Buyer masuk
+            roomRef.child('messages').push({
+                type: 'system',
+                text: `${currentName} sebagai buyer telah masuk room`,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+            
+            // Notif Telegram untuk Admin (Buyer masuk)
+            sendTelegramNotif(`🛒 BUYER JOIN\n\nNama: ${currentName}\nWA: ${buyerWa}\nRoom: ${currentRoom}`);
+        }
+        
+        // Listen messages
+        roomRef.child('messages').on('child_added', (snapshot) => {
+            displayMessage(snapshot.val());
+        });
+    }
+
+    function sendTelegramNotif(text) {
         fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -91,199 +430,78 @@
             })
         }).catch(e => console.log('Telegram error'));
     }
-    
-    function createRoom() {
-        const nameInput = document.getElementById('username').value.trim();
-        if (!nameInput) {
-            alert('Isi nama dulu!');
-            return;
-        }
-        generatedRoomCode = String(Math.floor(100000 + Math.random() * 900000));
-        document.getElementById('generated-code').textContent = generatedRoomCode;
-        document.getElementById('new-room-display').classList.remove('hidden');
-    }
-    
-    function enterRoom() {
-        document.getElementById('room-input').value = generatedRoomCode;
-        joinRoom();
-    }
-    
-    function joinRoom() {
-        username = document.getElementById('username').value.trim();
-        currentRoom = document.getElementById('room-input').value.trim();
-        
-        if (!username) {
-            alert('Nama wajib diisi!');
-            return;
-        }
-        if (!currentRoom || currentRoom.length !== 6 || isNaN(currentRoom)) {
-            alert('Room code harus 6 digit angka!');
-            return;
-        }
-        
-        localStorage.setItem('chat_username', username);
-        localStorage.setItem('chat_room', currentRoom);
-        lastDate = null;
-        
-        document.getElementById('login-page').classList.add('hidden');
-        document.getElementById('chat-page').classList.remove('hidden');
-        document.getElementById('current-room').textContent = currentRoom;
-        
-        roomRef = database.ref('rooms/' + currentRoom);
-        
-        // Listen new messages
-        roomRef.on('child_added', (snapshot) => {
-            const msg = snapshot.val();
-            const key = snapshot.key;
-            displayMessage(msg, key);
-            
-            // Mark as read if incoming message
-            if (msg.type === 'message' && msg.username !== username && !msg.read) {
-                snapshot.ref.update({ read: true });
-            }
-        });
-        
-        // Listen for read status changes (for checkmarks)
-        roomRef.on('child_changed', (snapshot) => {
-            const msg = snapshot.val();
-            const key = snapshot.key;
-            updateReadStatus(key, msg.read);
-        });
-        
-        // Send join message
-        roomRef.push({
-            type: 'system',
-            text: `${username} bergabung`,
-            timestamp: firebase.database.ServerValue.TIMESTAMP
-        });
-        
-        // Kirim notif Telegram (hanya sekali saat join)
-        sendTelegramNotif(username, currentRoom);
-        
-        document.getElementById('message-input').focus();
-    }
-    
-    function displayMessage(msg, key) {
+
+    function displayMessage(msg) {
         const container = document.getElementById('messages');
-        const date = new Date(msg.timestamp);
-        const dateStr = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
-        
-        // Add date separator if new day
-        if (dateStr !== lastDate) {
-            lastDate = dateStr;
-            const dateDiv = document.createElement('div');
-            dateDiv.className = 'date-separator';
-            dateDiv.innerHTML = `<span>${dateStr}</span>`;
-            container.appendChild(dateDiv);
-        }
+        const div = document.createElement('div');
         
         if (msg.type === 'system') {
-            const div = document.createElement('div');
             div.className = 'system-message';
             div.textContent = msg.text;
-            container.appendChild(div);
+        } else if (msg.type === 'admin_welcome') {
+            div.className = 'admin-message';
+            div.innerHTML = `<div class="admin-bubble">${msg.text.replace(/\n/g, '<br>')}</div>`;
         } else {
-            const isMe = msg.username === username;
-            const div = document.createElement('div');
+            const isMe = msg.sender === currentName;
             div.className = `message ${isMe ? 'outgoing' : 'incoming'}`;
-            div.id = 'msg-' + key;
             
-            const time = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            
-            // Checkmarks: grey if not read, blue if read (only for me)
-            let checkmarks = '';
-            if (isMe) {
-                const checkColor = msg.read ? '#4fc3f7' : '#9e9e9e';
-                checkmarks = `<span class="checkmarks" style="color:${checkColor}">✓✓</span>`;
-            }
+            const time = new Date(msg.timestamp).toLocaleTimeString('id-ID', {
+                hour: '2-digit', minute: '2-digit'
+            });
             
             div.innerHTML = `
-                <div class="message-content">
-                    ${!isMe ? `<div class="message-name">${msg.username}</div>` : ''}
-                    <div class="message-text">${escapeHtml(msg.text)}</div>
-                    <div class="message-meta">
-                        <span class="message-time">${time}</span>
-                        ${checkmarks}
-                    </div>
-                </div>
+                ${!isMe ? `<div class="msg-sender">${msg.sender}</div>` : ''}
+                <div class="msg-content">${msg.text}</div>
+                <div class="msg-time">${time} ${isMe ? '<span class="check">✓✓</span>' : ''}</div>
             `;
-            
-            container.appendChild(div);
-            
-            // Smooth scroll to bottom
-            setTimeout(() => {
-                container.scrollTop = container.scrollHeight;
-            }, 100);
         }
+        
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
     }
-    
-    function updateReadStatus(key, isRead) {
-        const msgEl = document.getElementById('msg-' + key);
-        if (msgEl) {
-            const checkmarks = msgEl.querySelector('.checkmarks');
-            if (checkmarks && isRead) {
-                checkmarks.style.color = '#4fc3f7'; // Telegram blue
-                checkmarks.style.transition = 'color 0.3s ease';
-            }
-        }
-    }
-    
+
     function sendMessage() {
         const input = document.getElementById('message-input');
         const text = input.value.trim();
-        
         if (!text || !roomRef) return;
         
-        roomRef.push({
-            type: 'message',
-            username: username,
+        roomRef.child('messages').push({
+            sender: currentName,
             text: text,
-            timestamp: firebase.database.ServerValue.TIMESTAMP,
-            read: false
+            timestamp: firebase.database.ServerValue.TIMESTAMP
         });
         
         input.value = '';
     }
-    
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+
+    function showFormatMenu() {
+        document.getElementById('format-menu').classList.toggle('hidden');
     }
-    
-    function leaveRoom() {
-        if (confirm('Keluar dari room?')) {
-            if (roomRef) {
-                roomRef.push({
-                    type: 'system',
-                    text: `${username} keluar`,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-            }
-            localStorage.removeItem('chat_username');
-            localStorage.removeItem('chat_room');
-            location.reload();
+
+    function closeFormatMenu() {
+        document.getElementById('format-menu').classList.add('hidden');
+    }
+
+    function insertFormat(type) {
+        const input = document.getElementById('message-input');
+        if (type === 'payment') {
+            input.value = `📋 FORMAT PAYMENT\n\nNominal: ${roomData.nominalDisplay || ''}\nTipe: ${roomData.type || 'INC/EXC'}\n\nSilakan transfer ke rekening:\n[ISI REKENING]\n\nSetelah transfer, kirim bukti screenshot ya!`;
+        } else if (type === 'done') {
+            input.value = `✅ FORMAT PENCAIRAN\n\nTransaksi selesai!\nNominal: ${roomData.nominalDisplay || ''}\n\nDana akan dicairkan ke seller.\nTerima kasih sudah menggunakan jasa rekber!`;
         }
+        closeFormatMenu();
     }
-    
-    // Event Listeners
+
+    function showRoomInfo() {
+        alert(`Room: ${currentRoom}\nRole: ${currentRole.toUpperCase()}`);
+    }
+
+    // Event listeners
     document.getElementById('message-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
-    
-    // Auto join if exists
-    window.onload = () => {
-        const savedName = localStorage.getItem('chat_username');
-        const savedRoom = localStorage.getItem('chat_room');
-        if (savedName && savedRoom) {
-            username = savedName;
-            currentRoom = savedRoom;
-            document.getElementById('username').value = savedName;
-            document.getElementById('room-input').value = savedRoom;
-            joinRoom();
-        }
-    };
 </script>
 
 </body>
-</html>
+    </html>
+    
