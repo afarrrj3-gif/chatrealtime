@@ -3,105 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat App - Step 1</title>
+    <title>Chat Real-Time</title>
     <style>
-        /* Styling sementara supaya kelihatan rapi */
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+        body { background: #f0f2f5; height: 100vh; overflow: hidden; }
+        
+        /* Login Page */
+        #login-page { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
             padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        .hidden { display: none; }
-        input, button {
-            padding: 10px;
-            margin: 5px 0;
+        .login-box {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             width: 100%;
+            max-width: 400px;
         }
-        #chat-box {
-            border: 1px solid #ccc;
-            height: 300px;
+        .login-box h1 { 
+            text-align: center; 
+            color: #333; 
+            margin-bottom: 5px; 
+            font-size: 28px;
+        }
+        .login-box p.subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .create-room-btn {
+            background: #48bb78;
+            margin-top: 10px;
+        }
+        .room-code-display {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            padding: 15px;
+            text-align: center;
+            margin: 15px 0;
+            border-radius: 10px;
+            display: none;
+        }
+        .room-code-display.show { display: block; }
+        .code-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            letter-spacing: 2px;
+        }
+        
+        /* Chat Page */
+        #chat-page { display: none; height: 100vh; flex-direction: column; }
+        .chat-header {
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .chat-header h2 { font-size: 18px; color: #333; }
+        .chat-header .room-info { color: #667eea; font-weight: bold; }
+        .chat-header .leave-btn {
+            background: #fc8181;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            width: auto;
+        }
+        
+        #messages {
+            flex: 1;
             overflow-y: auto;
-            padding: 10px;
-            margin: 10px 0;
+            padding: 20px;
+            background: #f0f2f5;
         }
         .message {
-            background: #f0f0f0;
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 5px;
+            max-width: 80%;
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message.me {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        .message.other {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .message .username {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            opacity: 0.8;
+        }
+        .message .time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+            display: block;
+            text-align: right;
+        }
+        .system-message {
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            margin: 10px 0;
+            font-style: italic;
+        }
+        
+        .input-area {
+            background: white;
+            padding: 15px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+        .input-area input {
+            flex: 1;
+            margin-bottom: 0;
+            border-radius: 25px;
+            padding: 12px 20px;
+        }
+        .input-area button {
+            width: 50px;
+            border-radius: 50%;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
         }
     </style>
 </head>
 <body>
 
-    <!-- HALAMAN LOGIN -->
-    <div id="login-page">
-        <h2>Masuk ke Chat Room</h2>
-        <input type="text" id="username" placeholder="Nama Anda">
-        <input type="text" id="room-code" placeholder="Kode Room (contoh: ABC123)">
-        <button onclick="joinRoom()">Gabung</button>
-        <button onclick="createRoom()">Buat Room Baru</button>
+<!-- Halaman Login -->
+<div id="login-page">
+    <div class="login-box">
+        <h1>💬 Chat Room</h1>
+        <p class="subtitle">Masuk dengan kode room atau buat baru</p>
         
-        <div id="new-code-info" class="hidden" style="margin-top: 20px; padding: 10px; background: #e0f7fa;">
-            <p>Room baru dibuat! Kode: <strong id="generated-code"></strong></p>
-            <button onclick="showChat()">Masuk ke Room</button>
+        <input type="text" id="username" placeholder="Nama Anda" maxlength="20">
+        <input type="text" id="room-input" placeholder="Kode Room (contoh: ABC123)" style="text-transform: uppercase;" maxlength="10">
+        
+        <button onclick="joinRoom()">Gabung ke Room</button>
+        <button class="create-room-btn" onclick="createRoom()">+ Buat Room Baru</button>
+        
+        <div id="new-room-display" class="room-code-display">
+            <p style="font-size: 14px; color: #666; margin-bottom: 5px;">Room berhasil dibuat!</p>
+            <div class="code-text" id="generated-code"></div>
+            <p style="font-size: 12px; color: #666; margin-top: 5px;">Share kode ini ke teman Anda</p>
+            <button onclick="enterRoom()" style="margin-top: 10px;">Masuk ke Room</button>
         </div>
     </div>
+</div>
 
-    <!-- HALAMAN CHAT -->
-    <div id="chat-page" class="hidden">
-        <h3>Room: <span id="current-room"></span></h3>
-        <div id="chat-box">
-            <!-- Pesan akan muncul di sini -->
+<!-- Halaman Chat -->
+<div id="chat-page">
+    <div class="chat-header">
+        <div>
+            <h2>Room: <span class="room-info" id="current-room">-</span></h2>
         </div>
-        <input type="text" id="message-input" placeholder="Tulis pesan...">
-        <button onclick="sendMessage()">Kirim</button>
+        <button class="leave-btn" onclick="leaveRoom()">Keluar</button>
     </div>
+    
+    <div id="messages"></div>
+    
+    <div class="input-area">
+        <input type="text" id="message-input" placeholder="Tulis pesan..." maxlength="200">
+        <button onclick="sendMessage()">➤</button>
+    </div>
+</div>
 
-    <script>
-        // VARIABEL PENYIMPANAN SEMENTARA
-        let username = '';
-        let roomCode = '';
+<!-- Firebase SDK (Versi 8 - Lebih Mudah) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-        function createRoom() {
-            // Generate kode random 6 huruf
-            roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-            document.getElementById('generated-code').textContent = roomCode;
-            document.getElementById('new-code-info').classList.remove('hidden');
+<script>
+    // KONFIGURASI FIREBASE ANDA (Sudah saya masukkan dari data tadi)
+    const firebaseConfig = {
+        apiKey: "AIzaSyDpQhIcitZwMMhQIHhpB9rp_k0EpBJT-2k",
+        authDomain: "chat-real-time-32576.firebaseapp.com",
+        databaseURL: "https://chat-real-time-32576-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "chat-real-time-32576",
+        storageBucket: "chat-real-time-32576.appspot.com",
+        messagingSenderId: "21431357525",
+        appId: "1:21431357525:web:5a32eb1ae3f59a485e04dc"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    
+    // Variabel Global
+    let currentRoom = '';
+    let username = '';
+    let roomRef = null;
+    let generatedRoomCode = '';
+    
+    // Buat Room Baru
+    function createRoom() {
+        const nameInput = document.getElementById('username').value.trim();
+        if (!nameInput) {
+            alert('Isi nama Anda dulu!');
+            return;
         }
-
-        function joinRoom() {
-            username = document.getElementById('username').value;
-            roomCode = document.getElementById('room-code').value.toUpperCase();
+        
+        // Generate kode random 6 karakter
+        generatedRoomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        document.getElementById('generated-code').textContent = generatedRoomCode;
+        document.getElementById('new-room-display').classList.add('show');
+    }
+    
+    // Masuk ke Room yang dibuat
+    function enterRoom() {
+        document.getElementById('room-input').value = generatedRoomCode;
+        joinRoom();
+    }
+    
+    // Gabung ke Room
+    function joinRoom() {
+        username = document.getElementById('username').value.trim();
+        currentRoom = document.getElementById('room-input').value.trim().toUpperCase();
+        
+        if (!username) {
+            alert('Nama tidak boleh kosong!');
+            return;
+        }
+        if (!currentRoom) {
+            alert('Kode room tidak boleh kosong!');
+            return;
+        }
+        
+        // Simpan ke localStorage (biar refresh tetap di chat)
+        localStorage.setItem('chat_username', username);
+        localStorage.setItem('chat_room', currentRoom);
+        
+        // Tampilkan chat page
+        document.getElementById('login-page').style.display = 'none';
+        document.getElementById('chat-page').style.display = 'flex';
+        document.getElementById('current-room').textContent = currentRoom;
+        
+        // Connect ke Firebase
+        roomRef = database.ref('rooms/' + currentRoom);
+        
+        // Dengarkan pesan baru (REAL-TIME)
+        roomRef.on('child_added', (snapshot) => {
+            const msg = snapshot.val();
+            displayMessage(msg);
+        });
+        
+        // Kirim notif bergabung
+        roomRef.push({
+            type: 'system',
+            text: `${username} bergabung ke room`,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+        
+        // Fokus ke input
+        document.getElementById('message-input').focus();
+    }
+    
+    // Tampilkan Pesan
+    function displayMessage(msg) {
+        const messagesDiv = document.getElementById('messages');
+        const div = document.createElement('div');
+        
+        if (msg.type === 'system') {
+            div.className = 'system-message';
+            div.textContent = msg.text;
+        } else {
+            const isMe = msg.username === username;
+            div.className = 'message ' + (isMe ? 'me' : 'other');
             
-            if (!username || !roomCode) {
-                alert('Nama dan kode room wajib diisi!');
-                return;
-            }
+            const time = new Date(msg.timestamp).toLocaleTimeString('id-ID', {
+                hour: '2-digit', minute: '2-digit'
+            });
             
-            showChat();
+            div.innerHTML = `
+                ${!isMe ? `<div class="username">${msg.username}</div>` : ''}
+                ${msg.text}
+                <div class="time">${time}</div>
+            `;
         }
-
-        function showChat() {
-            document.getElementById('login-page').classList.add('hidden');
-            document.getElementById('chat-page').classList.remove('hidden');
-            document.getElementById('current-room').textContent = roomCode;
+        
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    
+    // Kirim Pesan
+    function sendMessage() {
+        const input = document.getElementById('message-input');
+        const text = input.value.trim();
+        
+        if (!text || !roomRef) return;
+        
+        roomRef.push({
+            type: 'message',
+            username: username,
+            text: text,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+        
+        input.value = '';
+    }
+    
+    // Keluar dari Room
+    function leaveRoom() {
+        if (roomRef) {
+            roomRef.push({
+                type: 'system',
+                text: `${username} keluar dari room`,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
         }
-
-        function sendMessage() {
-            const input = document.getElementById('message-input');
-            const message = input.value;
+        
+        localStorage.removeItem('chat_username');
+        localStorage.removeItem('chat_room');
+        location.reload();
+    }
+    
+    // Kirim dengan Enter
+    document.getElementById('message-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+    
+    // Cek localStorage (Auto-login kalau sudah pernah masuk)
+    window.onload = function() {
+        const savedName = localStorage.getItem('chat_username');
+        const savedRoom = localStorage.getItem('chat_room');
+        
+        if (savedName && savedRoom) {
+            username = savedName;
+            currentRoom = savedRoom;
             
-            if (message) {
-                // Tambah pesan ke chat box (sementara)
-                const chatBox = document.getElementById('chat-box');
-                chatBox.innerHTML += `<div class="message"><strong>${username}:</strong> ${message}</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight; // Scroll ke bawah
-                input.value = '';
-            }
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('chat-page').style.display = 'flex';
+            document.getElementById('current-room').textContent = currentRoom;
+            
+            roomRef = database.ref('rooms/' + currentRoom);
+            
+            roomRef.on('child_added', (snapshot) => {
+                const msg = snapshot.val();
+                displayMessage(msg);
+            });
+            
+            roomRef.push({
+                type: 'system',
+                text: `${username} kembali online`,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
         }
-    </script>
+    };
+</script>
 
 </body>
 </html>
