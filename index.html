@@ -4,7 +4,523 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rekber MC - AryanzUtama</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background: #000;
+    color: white;
+    overflow-x: hidden;
+}
+
+.page {
+    display: none;
+    min-height: 100vh;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.page.active-page {
+    opacity: 1;
+}
+
+.banner-wrap {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+}
+
+.banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.6);
+}
+
+.banner-dark {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 0%, #000 100%);
+}
+
+.banner-text {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.banner-text h1 {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.banner-text p {
+    opacity: 0.8;
+    margin-top: 8px;
+    font-size: 15px;
+}
+
+.home-body {
+    padding: 0 20px 100px;
+    margin-top: -20px;
+    position: relative;
+    z-index: 2;
+}
+
+.profile-box {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.prof-ava {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+.prof-info h2 {
+    font-size: 22px;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.verif-badge {
+    background: rgba(52,199,89,0.2);
+    color: #34C759;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    border: 1px solid rgba(52,199,89,0.3);
+    font-weight: 600;
+}
+
+.menu-box {
+    margin-bottom: 25px;
+}
+
+.menu-label {
+    font-size: 13px;
+    color: #8E8E93;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    margin-left: 5px;
+    font-weight: 600;
+}
+
+.menu-item {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    outline: none;
+}
+
+.menu-item:active {
+    transform: scale(0.98);
+    background: rgba(255,255,255,0.12);
+}
+
+.menu-item.buyer { border-left: 4px solid #007AFF; }
+.menu-item.seller { border-left: 4px solid #34C759; }
+
+.item-icon {
+    font-size: 28px;
+    width: 50px;
+    height: 50px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-text {
+    flex: 1;
+    text-align: left;
+}
+
+.item-text b {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 3px;
+    font-weight: 600;
+}
+
+.item-text span {
+    font-size: 13px;
+    color: #8E8E93;
+}
+
+.item-arrow {
+    font-size: 24px;
+    color: #8E8E93;
+    opacity: 0.5;
+}
+
+.stats-box {
+    background: rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat b {
+    display: block;
+    font-size: 24px;
+    color: #007AFF;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.stat span {
+    font-size: 11px;
+    color: #8E8E93;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-line {
+    width: 1px;
+    height: 40px;
+    background: rgba(255,255,255,0.1);
+}
+
+.powered {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.nav-bar {
+    background: rgba(0,0,0,0.9);
+    backdrop-filter: blur(20px);
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    color: #007AFF;
+    font-size: 17px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.nav-bar span {
+    flex: 1;
+    text-align: center;
+    font-weight: 600;
+    font-size: 17px;
+    margin-right: 60px;
+}
+
+.form-wrap {
+    padding: 30px 20px;
+    min-height: calc(100vh - 60px);
+}
+
+.seller-bg {
+    background: linear-gradient(180deg, rgba(52,199,89,0.08) 0%, transparent 40%);
+}
+
+.form-head {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.form-icon {
+    font-size: 55px;
+    margin-bottom: 15px;
+}
+
+.form-head h2 {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.input-box {
+    margin-bottom: 22px;
+}
+
+.input-box label {
+    display: block;
+    font-size: 13px;
+    color: #8E8E93;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 16px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.input-box input:focus {
+    border-color: #007AFF;
+    background: rgba(255,255,255,0.12);
+}
+
+.uang-text {
+    color: #34C759;
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 12px;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.type-btns {
+    display: flex;
+    gap: 12px;
+}
+
+.t-btn {
+    flex: 1;
+    padding: 14px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.t-btn.aktif {
+    border-color: #007AFF;
+    background: rgba(0,122,255,0.2);
+    color: #007AFF;
+}
+
+.main-btn {
+    width: 100%;
+    padding: 16px;
+    background: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.main-btn:disabled {
+    background: #333;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.main-btn.green {
+    background: #34C759;
+}
+
+.main-btn.red {
+    background: #FF3B30;
+}
+
+.main-btn.small {
+    width: auto;
+    padding: 8px 16px;
+    font-size: 14px;
+    margin-top: 0;
+}
+
+.hasil-box {
+    margin-top: 30px;
+    background: rgba(52,199,89,0.1);
+    border: 2px dashed #34C759;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    animation: fadeIn 0.4s;
+}
+
+.kode-label {
+    font-size: 13px;
+    color: #8E8E93;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.kode-angka {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 20px;
+    color: #34C759;
+}
+
+.copy-btn {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    padding: 10px 24px;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.admin-bg {
+    background: rgba(0,0,0,0.98);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.admin-modal {
+    background: rgba(28,28,30,0.98);
+    border-radius: 24px;
+    padding: 40px 30px;
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.adm-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+.admin-modal h3 {
+    margin-bottom: 25px;
+    font-size: 20px;
+}
+
+.admin-modal input {
+    width: 100%;
+    padding: 16px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 20px;
+    outline: none;
+}
+
+.batal-btn {
+    background: none;
+    border: none;
+    color: #007AFF;
+    margin-top: 15px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.admin-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.room-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.room-item {
+    background: rgba(255,255,255,0.08);
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.room-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.room-info b {
+    color: #007AFF;
+    font-size: 16px;
+}
+
+.room-info span {
+    color: #34C759;
+    font-size: 14px;
+}
+
+.room-info small {
+    color: #8E8E93;
+    font-size: 12px;
+}
+    </style>
 </head>
 <body>
 
@@ -51,26 +567,15 @@
         </div>
 
         <div class="stats-box">
-            <div class="stat">
-                <b>100%</b>
-                <span>Aman</span>
-            </div>
+            <div class="stat"><b>100%</b><span>Aman</span></div>
             <div class="stat-line"></div>
-            <div class="stat">
-                <b>24/7</b>
-                <span>Support</span>
-            </div>
+            <div class="stat"><b>24/7</b><span>Support</span></div>
             <div class="stat-line"></div>
-            <div class="stat">
-                <b>2-5%</b>
-                <span>Fee</span>
-            </div>
+            <div class="stat"><b>2-5%</b><span>Fee</span></div>
         </div>
     </div>
 
-    <div class="powered" onclick="openAdmin()">
-        PoweredByAryanzUtama
-    </div>
+    <div class="powered" onclick="openAdmin()">PoweredByAryanzUtama</div>
 </div>
 
 <!-- PAGE 2: BUYER FORM -->
@@ -165,7 +670,8 @@
     </div>
 </div>
 
-<!-- PAGE 6: CHAT -->
+<!-- PART 1 END - LANJUT PART 2 -->
+    <!-- PAGE 6: CHAT -->
 <div id="page-chat" class="page">
     <div class="chat-head">
         <button onclick="goHome()" class="back-chat">‹</button>
@@ -185,34 +691,30 @@
         <div class="payment-box">
             <div class="payment-header">𝙿𝙰𝚈𝙼𝙴𝙽𝚃 𝚁𝚎𝚔𝙱𝚎𝚛 𝚋𝚢 𝙰𝚛𝚢𝚊𝚗𝚣𝚄𝚝𝚊𝚖𝚊</div>
             <div class="payment-list">
-                *List Mc _AryanzUtama_*\n- 0-15𝙆 ~ 3𝙆 \n- 16-100𝙆 ~ 5𝙆\n- 101-250𝙆 ~ 10𝙆\n- 251-500𝙆 ~ 15𝙆\n- 𝘿𝙎𝙏
+                *List Mc _AryanzUtama_*<br>
+                - 0-15𝙆 ~ 3𝙆 <br>
+                - 16-100𝙆 ~ 5𝙆<br>
+                - 101-250𝙆 ~ 10𝙆<br>
+                - 251-500𝙆 ~ 15𝙆<br>
+                - 𝘿𝙎𝙏
             </div>
             <div class="payment-detail">
-                <div class="pay-row">
-                    <span>𝘿𝘼𝙉𝘼 : 089588037479</span>
-                    <button class="copy-small" onclick="copyText('089588037479')">Salin</button>
-                </div>
+                <div class="pay-row"><span>𝘿𝘼𝙉𝘼 : 089588037479</span><button class="copy-small" onclick="copyText('089588037479')">Salin</button></div>
                 <div class="pay-an">𝘼/𝙉 : 𝙉𝙞 𝙆𝙤𝙢𝙖𝙣𝙜</div>
-                
-                <div class="pay-row" style="margin-top:10px;">
-                    <span>𝙂𝙤𝙥𝙖𝙮 : 0895329660340</span>
-                    <button class="copy-small" onclick="copyText('0895329660340')">Salin</button>
-                </div>
+                <div class="pay-row" style="margin-top:8px;"><span>𝙂𝙤𝙥𝙖𝙮 : 0895329660340</span><button class="copy-small" onclick="copyText('0895329660340')">Salin</button></div>
                 <div class="pay-an">𝘼/𝙉 : 𝘼𝙧𝙮𝙖𝙣𝙯𝙐𝙩𝙖𝙢𝙖</div>
-                
-                <div class="pay-row" style="margin-top:10px;">
-                    <span>𝙌𝙍𝙄𝙎 : 𝘿𝙄 𝘼𝙏𝘼𝙎</span>
-                    <button class="copy-small" onclick="showQRIS()">Lihat QRIS</button>
-                </div>
+                <div class="pay-row" style="margin-top:8px;"><span>𝙌𝙍𝙄𝙎 : 𝘿𝙄 𝘼𝙏𝘼𝙎</span><button class="copy-small" onclick="showQRIS()">Lihat QRIS</button></div>
             </div>
             <div class="payment-note">
-                *NOTE* ❗\n- _SERTAKAN BUKTI TF_\n- _JUAL AKUN? HUB ADMIN_\n- _SALAH TF? TANGGUNG JAWAB SENDIRI_
+                *NOTE* ❗<br>
+                - _SERTAKAN BUKTI TF_<br>
+                - _JUAL AKUN? HUB ADMIN_<br>
+                - _SALAH TF? TANGGUNG JAWAB SENDIRI_
             </div>
         </div>
     </div>
 
     <div class="input-float">
-        <div class="blur-bg"></div>
         <div class="input-row">
             <button class="btn-clip" onclick="document.getElementById('file-in').click()">📎</button>
             <input type="file" id="file-in" hidden accept="image/*" onchange="kirimGambar(this)">
@@ -245,7 +747,7 @@
     </div>
 </div>
 
-<!-- SPAM DETECTION MODAL -->
+<!-- SPAM MODAL -->
 <div id="spam-modal" class="spam-modal" style="display:none;">
     <div class="spam-content">
         <h3>⚠️ Spam Terdeteksi</h3>
@@ -278,26 +780,603 @@
     </div>
 </div>
 
-<!-- TELEGRAM NOTIF MODAL -->
+<!-- NOTIF MODAL -->
 <div id="notif-modal" class="modal" style="display:none;">
     <div class="modal-back" onclick="closeNotif()"></div>
     <div class="modal-content notif-box">
-        <h4>🔔 Notif Telegram (Simulasi)</h4>
+        <h4>🔔 Notif Telegram</h4>
         <p id="notif-text">AryanzUtama sedang ada mc...</p>
-        <div class="notif-actions" id="notif-actions">
+        <div class="notif-actions">
             <button class="main-btn green" onclick="confirmPayment(true)">Masuk</button>
             <button class="main-btn red" onclick="confirmPayment(false)">Ngga</button>
         </div>
     </div>
 </div>
 
-<!-- Firebase -->
+<style>
+/* CHAT STYLES - TELEGRAM STYLE */
+.chat-head {
+    background: #1a1a1a;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.back-chat {
+    background: none;
+    border: none;
+    color: #007AFF;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+}
+
+.chat-ava {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.chat-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-info span:first-child {
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+}
+
+.tipe-badge {
+    background: rgba(52,199,89,0.2);
+    color: #34C759;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 10px;
+    border: 1px solid rgba(52,199,89,0.3);
+    font-weight: 600;
+    width: fit-content;
+    margin-top: 2px;
+}
+
+.menu-chat {
+    background: none;
+    border: none;
+    color: #8E8E93;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.chat-bg {
+    height: calc(100vh - 120px);
+    background: #0f0f0f;
+    background-image: url('https://res.cloudinary.com/dtdodhqqi/image/upload/v1771310542/c36725a5a2a254a5df8c7dd4bdaa05af_v3tzna.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow-y: auto;
+    position: relative;
+}
+
+.msg-list {
+    padding: 16px 12px 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 100%;
+}
+
+/* BUBBLE TELEGRAM STYLE */
+.bubble {
+    max-width: 75%;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-size: 15px;
+    line-height: 1.3;
+    animation: fadeIn 0.2s;
+    position: relative;
+    word-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ORANG LAIN - KIRI - ABU ABU */
+.bubble.in {
+    align-self: flex-start;
+    background: #2a2a2a;
+    color: white;
+    border-bottom-left-radius: 4px;
+    margin-right: auto;
+}
+
+/* SAYA SENDIRI - KANAN - BIRU TUA */
+.bubble.out {
+    align-self: flex-end;
+    background: #2b5278;
+    color: white;
+    border-bottom-right-radius: 4px;
+    margin-left: auto;
+}
+
+/* SYSTEM */
+.bubble.system {
+    align-self: center;
+    background: rgba(0,0,0,0.6);
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 14px;
+    text-align: center;
+    max-width: 90%;
+    border: none;
+}
+
+.pengirim {
+    font-size: 12px;
+    color: #8E8E93;
+    margin-bottom: 2px;
+    font-weight: 600;
+    display: block;
+}
+
+.isi {
+    display: inline;
+    word-wrap: break-word;
+}
+
+.waktu-box {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 4px;
+    margin-left: 8px;
+    float: right;
+    margin-top: 4px;
+}
+
+.waktu {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    white-space: nowrap;
+}
+
+.ceklis {
+    font-size: 12px;
+    color: #4fc3f7;
+}
+
+.hapus-text {
+    font-style: italic;
+    color: #8E8E93;
+    font-size: 13px;
+    padding: 4px 8px;
+}
+
+.chat-img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: block;
+    margin: 4px 0;
+}
+
+.payment-container {
+    position: fixed;
+    bottom: 80px;
+    left: 0;
+    right: 0;
+    max-height: 35vh;
+    overflow-y: auto;
+    z-index: 50;
+    padding: 0 10px;
+}
+
+.payment-box {
+    background: rgba(20,20,20,0.98);
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 12px;
+    line-height: 1.4;
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+.payment-header {
+    font-weight: 700;
+    color: #34C759;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.payment-list {
+    color: #fff;
+    margin-bottom: 8px;
+    font-size: 11px;
+}
+
+.payment-detail {
+    background: rgba(255,255,255,0.05);
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.pay-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.copy-small {
+    background: rgba(0,122,255,0.2);
+    color: #007AFF;
+    border: none;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.pay-an {
+    font-size: 11px;
+    color: #8E8E93;
+    margin-bottom: 6px;
+}
+
+.payment-note {
+    color: #FF3B30;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.input-float {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 12px 25px;
+    z-index: 100;
+    background: rgba(26,26,26,0.95);
+    backdrop-filter: blur(10px);
+}
+
+.input-row {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    z-index: 2;
+}
+
+.btn-clip {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #8E8E93;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-bottom: 2px;
+}
+
+.input-only {
+    flex: 1;
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+}
+
+.input-only input {
+    width: 100%;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 15px;
+    outline: none;
+}
+
+.input-only input::placeholder {
+    color: rgba(255,255,255,0.4);
+}
+
+.btn-kirim {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #2b5278;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: #1c1c1c;
+    border-radius: 16px;
+    padding: 20px;
+    width: 90%;
+    max-width: 320px;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.qris-img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.ctx-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+}
+
+.ctx-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(3px);
+}
+
+.ctx-box {
+    background: #2c2c2e;
+    border-radius: 14px;
+    overflow: hidden;
+    animation: slideUp 0.3s;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 20px;
+}
+
+.ctx-box button {
+    width: 100%;
+    padding: 16px;
+    background: none;
+    border: none;
+    color: #007AFF;
+    font-size: 17px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+}
+
+.ctx-box button.red {
+    color: #FF3B30;
+    font-weight: 500;
+}
+
+.ctx-line {
+    height: 8px;
+    background: rgba(0,0,0,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.spam-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 2500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.spam-content {
+    background: #1c1c1c;
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.spam-content h3 {
+    color: #FF3B30;
+    margin-bottom: 8px;
+    font-size: 17px;
+}
+
+.spam-content p {
+    color: #8E8E93;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
+.spam-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.spam-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.refund-form {
+    text-align: left;
+}
+
+.refund-form h3 {
+    text-align: center;
+    margin-bottom: 16px;
+    color: #FF3B30;
+    font-size: 16px;
+}
+
+.refund-form input {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    color: white;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.wallet-select {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.wallet-opt {
+    background: rgba(255,255,255,0.08);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    font-size: 13px;
+    color: #8E8E93;
+    transition: all 0.3s;
+}
+
+.wallet-opt.active {
+    border-color: #34C759;
+    color: #34C759;
+    background: rgba(52,199,89,0.1);
+}
+
+.wallet-opt input {
+    display: none;
+}
+
+.notif-box {
+    text-align: center;
+}
+
+.notif-box h4 {
+    color: #007AFF;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+.notif-box p {
+    margin-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #ccc;
+}
+
+.notif-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.notif-actions .main-btn {
+    flex: 1;
+    margin-top: 0;
+    padding: 12px;
+    font-size: 14px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+}
+</style>
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
 <script>
-// Config Firebase
+// PART 2 END - LANJUT PART 3
+    // PART 3 START - CONFIG & SETUP
+
 const firebaseConfig = {
     apiKey: "AIzaSyDpQhIcitZwMMhQIHhpB9rp_k0EpBJT-2k",
     authDomain: "chat-real-time-32576.firebaseapp.com",
@@ -315,13 +1394,21 @@ const storage = firebase.storage();
 const BOT_TOKEN = "8672339759:AAF_jy2iB5xZlHh6843s-8RkukvJ5-yROto";
 const CHAT_ID = "7129085772";
 
-let role = '', nama = '', room = '', tipe = '', nominal = '', wa = '';
-let msgIdSelect = null, tekanLama, editMode = false;
-let msgCount = 0, lastMsgTime = Date.now(), chatLocked = false;
+let role = '';
+let nama = '';
+let room = '';
+let tipe = '';
+let nominal = '';
+let wa = '';
+let msgIdSelect = null;
+let tekanLama = null;
+let msgCount = 0;
+let lastMsgTime = Date.now();
+let chatLocked = false;
 let selectedWallet = '';
 let isAdmin = false;
 
-// Navigation
+// NAVIGATION
 function showPage(id) {
     document.querySelectorAll('.page').forEach(p => {
         p.style.display = 'none';
@@ -342,11 +1429,19 @@ function goHome() {
     showPage('home');
 }
 
-function goBuyer() { showPage('buyer'); }
-function goSeller() { showPage('seller'); }
-function openAdmin() { showPage('admin-login'); }
+function goBuyer() {
+    showPage('buyer');
+}
 
-// Format Uang
+function goSeller() {
+    showPage('seller');
+}
+
+function openAdmin() {
+    showPage('admin-login');
+}
+
+// FORMAT UANG
 function formatUang() {
     let v = document.getElementById('s-nom').value.replace(/\D/g, '');
     document.getElementById('s-nom').value = v;
@@ -376,7 +1471,7 @@ function checkSeller() {
     document.getElementById('btn-s').disabled = !(n && m && w && tipe);
 }
 
-// Buat Room
+// BUAT ROOM
 function buatRoom() {
     nama = document.getElementById('s-name').value;
     room = String(Math.floor(100000 + Math.random() * 900000));
@@ -385,19 +1480,23 @@ function buatRoom() {
     document.getElementById('kode').textContent = room;
     document.getElementById('hasil-room').style.display = 'block';
     
-    const roomData = {
-        info: { nominal, tipe, seller: nama, wa: wa, created: Date.now() },
+    db.ref('rooms/' + room).set({
+        info: {
+            nominal: nominal,
+            tipe: tipe,
+            seller: nama,
+            wa: wa,
+            created: Date.now()
+        },
         messages: {}
-    };
-    
-    db.ref('rooms/' + room).set(roomData);
+    });
     
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
             chat_id: CHAT_ID,
-            text: `🏪 NEW SELLER\nNama: ${nama}\nNominal: ${nominal}\nTipe: ${tipe}\nRoom: ${room}\nWaktu: ${new Date().toLocaleString('id-ID')}`
+            text: `🏪 NEW SELLER\nNama: ${nama}\nNominal: ${nominal}\nTipe: ${tipe}\nRoom: ${room}`
         })
     });
 }
@@ -407,7 +1506,7 @@ function salinKode() {
     alert('Kode disalin: ' + room);
 }
 
-// Join Buyer
+// JOIN BUYER
 function joinBuyer() {
     nama = document.getElementById('b-name').value;
     room = document.getElementById('b-code').value;
@@ -419,7 +1518,11 @@ function joinBuyer() {
             nominal = i.nominal;
             tipe = i.tipe;
             
-            db.ref('rooms/' + room + '/buyer').set({ name: nama, wa: wa });
+            db.ref('rooms/' + room + '/buyer').set({
+                name: nama,
+                wa: wa
+            });
+            
             masukChat('buyer', true);
             
             fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -427,7 +1530,7 @@ function joinBuyer() {
                 headers: {'Content-Type':'application/json'},
                 body: JSON.stringify({
                     chat_id: CHAT_ID,
-                    text: `🛒 NEW BUYER\nNama: ${nama}\nRoom: ${room}\nWaktu: ${new Date().toLocaleString('id-ID')}`
+                    text: `🛒 NEW BUYER\nNama: ${nama}\nRoom: ${room}`
                 })
             });
         } else {
@@ -440,7 +1543,7 @@ function masukSeller() {
     masukChat('seller', false);
 }
 
-// Admin Functions
+// ADMIN FUNCTIONS
 function cekAdmin() {
     if(document.getElementById('adm-pass').value === 'khansa') {
         isAdmin = true;
@@ -499,7 +1602,7 @@ function joinAsAdmin(roomId) {
     });
 }
 
-// Chat System
+// CHAT SYSTEM
 function masukChat(r, isBuyerJoin) {
     role = r;
     showPage('chat');
@@ -525,70 +1628,130 @@ function initChat() {
     
     if(role === 'seller') {
         setTimeout(() => {
-            sendBotMessage(`Halo ${nama}! 👋\nSaya Admin MC.\n💰 ${nominal}\n📌 ${tipe}\n🔑 ${room}`);
+            sendBotMsg(`Halo ${nama}! 👋\n\nSaya Admin MC.\n💰 ${nominal}\n📌 ${tipe}\n🔑 ${room}`);
         }, 500);
     }
 }
 
-function sendBotMessage(text) {
+function sendBotMsg(text) {
     db.ref('rooms/' + room + '/messages').push({
         dari: 'AryanzUtama',
         text: text,
-        waktu: new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}),
+        waktu: Date.now(),
         tipe: 'text'
     });
 }
 
 function sendPaymentFormat() {
-    const text = `𝙿𝙰𝚈𝙼𝙴𝙽𝚃 𝚁𝚎𝚔𝙱𝚎𝚛 𝚋𝚢 𝙰𝚛𝚢𝚊𝚗𝚣𝚄𝚝𝚊𝚖𝚊\n\n*List Mc _AryanzUtama_*\n- 0-15𝙆 ~ 3𝙆 \n- 16-100𝙆 ~ 5𝙆\n- 101-250𝙆 ~ 10𝙆\n- 251-500𝙆 ~ 15𝙆\n- 𝘿𝙎𝙏\n___________________________\n𝘿𝘼𝙉𝘼 : 089588037479\n𝘼/𝙉 : 𝙉𝙞 𝙆𝙤𝙢𝙖𝙣𝙜\n___________________________\n𝙂𝙤𝙥𝙖𝙮 : 0895329660340\n𝘼/𝙉 : 𝘼𝙧𝙮𝙖𝙣𝙯𝙐𝙩𝙖𝙢𝙖\n___________________________\n𝙌𝙍𝙄𝙎 : 𝘿𝙄 𝘼𝙏𝘼𝙎\n___________________________\n\n*NOTE* ❗\n- _SERTAKAN BUKTI TF  TIDAK ADA BUKTI TF?, TIDAK AKAN DI LANJUT KAN_ \n- _JUAL AKUN?, BELI AKUN?, TAWARIN KE ADMIN SAJA_\n- _SALAH TRANSFER? TANGGUNG JAWAB SENDIRI_\n\nPoweredByAryanzUtama`;
-sendBotMessage( text ) ;
-  }
-  // PART 2 START - Bubble Class & Chat Functions
+    const text = `𝙿𝙰𝚈𝙼𝙴𝙽𝚃 𝚁𝚎𝚔𝙱𝚎𝚛 𝚋𝚢 𝙰𝚛𝚢𝚊𝚗𝚣𝚄𝚝𝚊𝚖𝚊\n\n*List Mc _AryanzUtama_*\n- 0-15𝙆 ~ 3𝙆 \n- 16-100𝙆 ~ 5𝙆\n- 101-250𝙆 ~ 10𝙆\n- 251-500𝙆 ~ 15𝙆\n- 𝘿𝙎𝙏\n___________________________\n𝘿𝘼𝙉𝘼 : 089588037479\n𝘼/𝙉 : 𝙉𝙞 𝙆𝙤𝙢𝙖𝙣𝙜\n___________________________\n𝙂𝙤𝙥𝙖𝙮 : 0895329660340\n𝘼/𝙉 : 𝘼𝙧𝙮𝙖𝙣𝙯𝙐𝙩𝙖𝙢𝙖\n___________________________\n𝙌𝙍𝙄𝙎 : 𝘿𝙄 𝘼𝙏𝘼𝙎\n___________________________\n\n*NOTE* ❗\n- _SERTAKAN BUKTI TF_\n- _JUAL AKUN? HUB ADMIN_\n- _SALAH TF? TANGGUNG JAWAB SENDIRI_\n\nPoweredByAryanzUtama`;
+    sendBotMsg(text);
+}
+
+// PART 3 END - LANJUT PART 4
+    // PART 4 START - BUBBLE DISPLAY & ALL FEATURES
 
 function tampilPesan(key, m) {
     const list = document.getElementById('chat-msgs');
     const div = document.createElement('div');
     
-    // BUBBLE CLASS LOGIC (iPhone Style)
+    // BUBBLE CLASS LOGIC - TELEGRAM STYLE
+    // Chat sendiri = out (kanan, biru)
+    // Chat orang lain = in (kiri, abu)
+    // System = tengah
+    
     let bubbleClass = 'in';
-    if(m.dari === 'AryanzUtama' || m.dari === nama) bubbleClass = 'out';
-    if(m.system) bubbleClass = 'system';
+    let isMe = false;
     
-    div.className = `bubble ${bubbleClass}`;
-    if(!m.system) div.dataset.id = key;
+    if(m.system) {
+        bubbleClass = 'system';
+    } else if(m.dari === nama) {
+        bubbleClass = 'out';
+        isMe = true;
+    }
+    // else tetap 'in' untuk seller, buyer, admin lain
     
-    // Long press for edit/delete (iPhone style)
-    if(!m.system && (m.dari === nama || (isAdmin && m.dari !== 'AryanzUtama'))) {
-        div.onmousedown = () => { tekanLama = setTimeout(()=>bukaMenu(key, m),600); };
-        div.onmouseup = () => clearTimeout(tekanLama);
-        div.ontouchstart = () => { tekanLama = setTimeout(()=>bukaMenu(key, m),600); };
-        div.ontouchend = () => clearTimeout(tekanLama);
+    div.className = 'bubble ' + bubbleClass;
+    if(!m.system) {
+        div.dataset.id = key;
     }
     
-    const w = m.waktu || new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    // Long press menu
+    if(!m.system && (m.dari === nama || (isAdmin && m.dari !== 'AryanzUtama'))) {
+        div.onmousedown = function() {
+            tekanLama = setTimeout(function() {
+                bukaMenu(key, m);
+            }, 600);
+        };
+        div.onmouseup = function() {
+            clearTimeout(tekanLama);
+        };
+        div.ontouchstart = function() {
+            tekanLama = setTimeout(function() {
+                bukaMenu(key, m);
+            }, 600);
+        };
+        div.ontouchend = function() {
+            clearTimeout(tekanLama);
+        };
+    }
+    
+    const date = new Date(m.waktu);
+    const waktu = date.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    const ceklis = isMe ? '<span class="ceklis">✓✓</span>' : '';
     
     if(m.tipe === 'img') {
-        div.innerHTML = `<img src="${m.url}" class="chat-img" onclick="window.open('${m.url}')">`;
+        // FITUR FOTO - WAJIB ADA
+        let html = '';
+        if(!isMe && !m.system) {
+            html += '<span class="pengirim">' + escapeHtml(m.dari) + '</span>';
+        }
+        html += '<img src="' + m.url + '" class="chat-img" onclick="window.open(\'' + m.url + '\')">';
+        html += '<div class="waktu-box"><span class="waktu">' + waktu + '</span>' + ceklis + '</div>';
+        div.innerHTML = html;
     } else if(m.hapus) {
         div.className = 'bubble system';
-        div.style.alignSelf = 'flex-end';
         div.innerHTML = '<div class="hapus-text">🗑 Pesan dihapus</div>';
     } else {
-        const pengirim = (m.dari !== nama && !m.system) ? `<div class="pengirim">${m.dari}</div>` : '';
-        const check = (m.dari === nama) ? '<i>✓✓</i>' : '';
-        const edited = m.edited ? '<span style="font-size:10px;opacity:0.6"> (edited)</span>' : '';
-        div.innerHTML = `${pengirim}<div class="isi">${m.text}${edited}</div><div class="waktu">${w} ${check}</div>`;
+        // TEXT MESSAGE
+        const text = m.text || '';
+        const textLines = text.split('\n').length;
+        const isLongText = textLines > 2 || text.length > 100;
+        
+        let html = '';
+        
+        // Nama pengirim (hanya untuk chat orang lain)
+        if(!isMe && !m.system) {
+            html += '<span class="pengirim">' + escapeHtml(m.dari) + '</span>';
+        }
+        
+        // Isi pesan
+        html += '<span class="isi">' + escapeHtml(text) + '</span>';
+        
+        // Waktu & ceklis
+        if(isLongText) {
+            html += '<div class="waktu-box" style="margin-top:6px;"><span class="waktu">' + waktu + '</span>' + ceklis + '</div>';
+        } else {
+            html += '<span class="waktu-box"><span class="waktu">' + waktu + '</span>' + ceklis + '</span>';
+        }
+        
+        div.innerHTML = html;
     }
     
     list.appendChild(div);
     list.scrollTop = list.scrollHeight;
     
-    // Spam detection (5+ msg in 3 sec)
+    // Spam detection
     if(m.dari === nama && !m.system) {
         const now = Date.now();
         if(now - lastMsgTime < 3000) {
             msgCount++;
-            if(msgCount >= 5) showSpamModal();
+            if(msgCount >= 5) {
+                showSpamModal();
+            }
         } else {
             msgCount = 1;
             lastMsgTime = now;
@@ -596,7 +1759,14 @@ function tampilPesan(key, m) {
     }
 }
 
-// QRIS Functions
+function escapeHtml(text) {
+    if(!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML.replace(/\n/g, '<br>');
+}
+
+// QRIS FUNCTIONS
 function showQRIS() {
     document.getElementById('qris-modal').style.display = 'block';
 }
@@ -613,15 +1783,15 @@ function downloadQRIS() {
 }
 
 function copyText(text) {
-    navigator.clipboard.writeText(text);
-    alert('Nomor disalin: ' + text);
+    navigator.clipboard.writeText(text).then(function() {
+        alert('Disalin: ' + text);
+    });
 }
 
-// Context Menu (iPhone Style)
+// CONTEXT MENU
 function bukaMenu(id, m) {
     if(chatLocked) return;
     msgIdSelect = id;
-    editMode = false;
     document.getElementById('ctx-menu').style.display = 'block';
 }
 
@@ -634,21 +1804,23 @@ function hapusPesan() {
     if(!msgIdSelect) return;
     db.ref('rooms/' + room + '/messages/' + msgIdSelect).update({
         hapus: true,
-        text: null
+        text: null,
+        tipe: 'deleted'
     });
     tutupMenu();
 }
 
 function editPesan() {
     if(!msgIdSelect) return;
-    db.ref('rooms/' + room + '/messages/' + msgIdSelect).once('value', s => {
+    db.ref('rooms/' + room + '/messages/' + msgIdSelect).once('value', function(s) {
         const data = s.val();
-        if(data) {
+        if(data && data.text) {
             const newText = prompt('Edit pesan:', data.text);
-            if(newText && newText.trim()) {
+            if(newText && newText.trim() && newText !== data.text) {
                 db.ref('rooms/' + room + '/messages/' + msgIdSelect).update({
                     text: newText.trim(),
-                    edited: true
+                    edited: true,
+                    editedAt: Date.now()
                 });
             }
         }
@@ -656,10 +1828,10 @@ function editPesan() {
     tutupMenu();
 }
 
-// Kirim Pesan
+// KIRIM PESAN
 function kirimPesan() {
     if(chatLocked) {
-        alert('Chat terkunci sementara (spam detection)');
+        alert('Chat terkunci (spam detection)');
         return;
     }
     
@@ -667,59 +1839,106 @@ function kirimPesan() {
     const txt = inp.value.trim();
     if(!txt) return;
     
-    // Check keywords for payment confirmation
-    const keywords = ['c', 'cek', 'chek', 'msk', 'masuk', 'msuk', 'suk'];
-    const isCek = keywords.some(k => txt.toLowerCase().includes(k));
+    // Keywords untuk cek payment
+    const keywords = ['c', 'cek', 'chek', 'msk', 'masuk', 'msuk', 'suk', 'udah', 'sudah', 'done'];
+    const isCek = keywords.some(function(k) {
+        return txt.toLowerCase().indexOf(k) !== -1;
+    });
     
     db.ref('rooms/' + room + '/messages').push({
         dari: nama,
         text: txt,
-        waktu: new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}),
+        waktu: Date.now(),
         tipe: 'text'
     });
     
     inp.value = '';
     
-    // If buyer send cek/payment confirmation
+    // Auto response untuk buyer
     if(role === 'buyer' && isCek) {
-        setTimeout(() => {
-            sendBotMessage('AryanzUtama sedang cek saldo mohon tunggu jangan spam ya\nPoweredByAryanzUtama');
-        }, 500);
+        setTimeout(function() {
+            sendBotMsg('AryanzUtama sedang cek saldo mohon tunggu jangan spam ya\n\nPoweredByAryanzUtama');
+        }, 600);
         
-        setTimeout(() => {
-            document.getElementById('notif-text').textContent = 
-                `AryanzUtama sedang ada mc dengan nominal ${nominal} ${tipe}. Apakah saldo sudah masuk?`;
+        setTimeout(function() {
+            document.getElementById('notif-text').textContent = 'AryanzUtama sedang ada mc dengan nominal ' + nominal + ' ' + tipe + '. Apakah saldo sudah masuk?';
             document.getElementById('notif-modal').style.display = 'block';
-        }, 1000);
+        }, 1200);
     }
+}
+
+// KIRIM GAMBAR - FITUR FOTO WAJIB ADA
+function kirimGambar(input) {
+    const file = input.files[0];
+    if(!file) return;
+    
+    // Validasi
+    if(!file.type.startsWith('image/')) {
+        alert('Hanya file gambar yang diperbolehkan!');
+        return;
+    }
+    
+    if(file.size > 5 * 1024 * 1024) {
+        alert('Ukuran gambar maksimal 5MB!');
+        return;
+    }
+    
+    const fileName = 'img_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9) + '.jpg';
+    const ref = storage.ref('chat_images/' + room + '/' + fileName);
+    
+    const uploadTask = ref.put(file);
+    
+    uploadTask.on('state_changed', 
+        function(snapshot) {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload: ' + progress + '%');
+        },
+        function(error) {
+            console.error('Upload error:', error);
+            alert('Gagal upload gambar!');
+        },
+        function() {
+            uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                db.ref('rooms/' + room + '/messages').push({
+                    dari: nama,
+                    url: downloadURL,
+                    tipe: 'img',
+                    waktu: Date.now(),
+                    fileName: fileName
+                });
+                console.log('Upload selesai:', downloadURL);
+            });
+        }
+    );
+    
+    input.value = '';
 }
 
 function confirmPayment(masuk) {
     document.getElementById('notif-modal').style.display = 'none';
     
     if(masuk) {
-        const rules = `*PAYMENT MASUK* ‼️✅\n\n*_Ruls_* ‼️\n- _Pastikan harga mc sepakat dengan seller dan buyer Harga mc di larang berubah ‼️, Berubah? denda 1k_\n- _batas mc 12 Jam melebihi itu? Ku reff ke buyer, pikir kids masa ceinin sampe 12 jam kasian buyer 🗿_\n- _Mc batal? fee tetep kepotong_\n- Mc batal? harus di setujui dengan seller and buyer, *TIDAK MAIN HAKIM SENDIRI !*\n- _gausa buru-buru jual beli akun di bawa santai aja, buru-buru ? gua kick di grup, curiga mau ngerip wkwk_\n- _tf sesuai nomor, salah nomor? tanggung jwb sendiri_\n- _Admin slowres?, sabar anjay dikira yang mc elu doang, banyak gua kan femes🤭, aamiin_\n*___________________________*\n\n*KRITIK AND SARAN DISINI* 👇🏻\n*Link :* _blm siap_\n*All platfrom AryanzUtama :*\nhttps://afarrrj3-gif.github.io/InFoAryanzUtama/\n\n*Stay Amanah AryanzUtama*`;
+        const rules = '*PAYMENT MASUK* ‼️✅\n\n*_Ruls_* ‼️\n- _Pastikan harga mc sepakat dengan seller dan buyer Harga mc di larang berubah ‼️, Berubah? denda 1k_\n- _batas mc 12 Jam melebihi itu? Ku reff ke buyer, pikir kids masa ceinin sampe 12 jam kasian buyer 🗿_\n- _Mc batal? fee tetep kepotong_\n- Mc batal? harus di setujui dengan seller and buyer, *TIDAK MAIN HAKIM SENDIRI !*\n- _gausa buru-buru jual beli akun di bawa santai aja, buru-buru ? gua kick di grup, curiga mau ngerip wkwk_\n- _tf sesuai nomor, salah nomor? tanggung jwb sendiri_\n- _Admin slowres?, sabar anjay dikira yang mc elu doang, banyak gua kan femes🤭, aamiin_\n*___________________________*\n\n*KRITIK AND SARAN DISINI* 👇🏻\n*Link :* _blm siap_\n*All platfrom AryanzUtama :*\nhttps://afarrrj3-gif.github.io/InFoAryanzUtama/\n\n*Stay Amanah AryanzUtama*';
         
-        sendBotMessage(rules);
+        sendBotMsg(rules);
         
-        // Show contact seller button
-        setTimeout(() => {
-            db.ref('rooms/' + room + '/info').once('value', s => {
+        setTimeout(function() {
+            db.ref('rooms/' + room + '/info').once('value', function(s) {
                 const sellerWa = s.val().wa;
                 const div = document.createElement('div');
                 div.className = 'bubble system';
-                div.innerHTML = `<button class="main-btn" onclick="window.open('https://wa.me/62${sellerWa}?text=Halo gua dah tf ke AryanzUtama mana data nya? bisa kah di ceinin agar lebih mudah?')">Hubungi Seller untuk Data Akun</button>`;
+                div.innerHTML = '<button class="main-btn" onclick="window.open(\'https://wa.me/62' + sellerWa + '?text=Halo gua dah tf ke AryanzUtama mana data nya? bisa kah di ceinin agar lebih mudah?\')" style="margin:5px 0;">Hubungi Seller untuk Data Akun</button>';
                 document.getElementById('chat-msgs').appendChild(div);
             });
         }, 1000);
     } else {
-        sendBotMessage('Saldo tidak masuk hubungi AryanzUtama untuk melanjutkan');
-        setTimeout(() => {
+        sendBotMsg('Saldo tidak masuk hubungi AryanzUtama untuk melanjutkan');
+        setTimeout(function() {
             const div = document.createElement('div');
             div.className = 'bubble system';
-            div.innerHTML = `<button class="main-btn" onclick="window.open('https://wa.me/6289509506039?text=Apakah saldo saya tidak masuk?')">Nomor Admin</button>`;
+            div.innerHTML = '<button class="main-btn" onclick="window.open(\'https://wa.me/6289509506039?text=Apakah saldo saya tidak masuk?\')" style="margin:5px 0;">Nomor Admin</button>';
             document.getElementById('chat-msgs').appendChild(div);
-        }, 500);
+        }, 600);
     }
 }
 
@@ -727,37 +1946,34 @@ function closeNotif() {
     document.getElementById('notif-modal').style.display = 'none';
 }
 
-// Spam Detection
+// SPAM DETECTION
 function showSpamModal() {
     chatLocked = true;
     document.getElementById('spam-modal').style.display = 'block';
-    setTimeout(() => {
+    setTimeout(function() {
         chatLocked = false;
     }, 3000);
 }
 
 function handleSpamOption(opt) {
     document.getElementById('spam-modal').style.display = 'none';
-    chatLocked = false;
     
     if(opt === 'lanjut') {
-        sendBotMessage('Chat dilanjutkan. Mohon tidak spam.');
+        sendBotMsg('Chat dilanjutkan. Mohon tidak spam.');
     } else if(opt === 'batal') {
         if(role === 'buyer') {
-            sendBotMessage('Menunggu persetujuan seller untuk batal...');
-            setTimeout(() => {
+            sendBotMsg('Menunggu persetujuan seller untuk batal...');
+            setTimeout(function() {
                 const div = document.createElement('div');
                 div.className = 'bubble system';
-                div.innerHTML = `<button class="main-btn red" onclick="initCancel()">Batalkan TRX</button>`;
+                div.innerHTML = '<button class="main-btn red" onclick="initCancel()" style="margin:5px 0;">Batalkan TRX</button>';
                 document.getElementById('chat-msgs').appendChild(div);
             }, 500);
         } else {
             alert('Hanya buyer yang bisa menginisiasi pembatalan!');
         }
-    } else if(opt === 'bagi') {
-        sendBotMessage('Fitur sedang di kembangkan oleh AryanzUtama');
-    } else if(opt === 'masalah') {
-        sendBotMessage('Fitur sedang di kembangkan oleh AryanzUtama');
+    } else if(opt === 'bagi' || opt === 'masalah') {
+        sendBotMsg('Fitur sedang di kembangkan oleh AryanzUtama');
     }
 }
 
@@ -771,13 +1987,15 @@ function initCancel() {
 
 function selectWallet(radio) {
     selectedWallet = radio.value;
-    document.querySelectorAll('.wallet-opt').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.wallet-opt').forEach(function(l) {
+        l.classList.remove('active');
+    });
     radio.parentElement.classList.add('active');
 }
 
 function submitRefund() {
-    const nomor = document.getElementById('refund-nomor').value;
-    const an = document.getElementById('refund-an').value;
+    const nomor = document.getElementById('refund-nomor').value.trim();
+    const an = document.getElementById('refund-an').value.trim();
     
     if(!nomor || !an || !selectedWallet) {
         alert('Lengkapi semua data!');
@@ -789,16 +2007,17 @@ function submitRefund() {
         return;
     }
     
-    sendBotMessage('TRX BATAL ‼️ FEE TETEP KEPOTONG\n\n*Format trx batal AryanzUtama*\n____________________________\n*Nomor e-wallet tujuan* : ' + nomor + '\n*Atas nama* : ' + an + '\n' + selectedWallet + ' : ✅\n____________________________\n\n*PERHATIAN* ‼️\n_Tf e-wallet selain dana di kenakan biaya 1k ‼️_');
+    const msg1 = 'TRX BATAL ‼️ FEE TETEP KEPOTONG\n\n*Format trx batal AryanzUtama*\n____________________________\n*Nomor e-wallet tujuan* : ' + nomor + '\n*Atas nama* : ' + an + '\n' + selectedWallet + ' : ✅\n____________________________\n\n*PERHATIAN* ‼️\n_Tf e-wallet selain dana di kenakan biaya 1k ‼️_';
+    sendBotMsg(msg1);
     
-    sendBotMessage('Saldo sedang di transfer oleh AryanzUtama tolong gausa spam nanti akan di balas secepatnya, spam? kick!');
+    sendBotMsg('Saldo sedang di transfer oleh AryanzUtama tolong gausa spam nanti akan di balas secepatnya, spam? kick!');
     
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({
             chat_id: CHAT_ID,
-            text: `❌ REFUND REQUEST\nRoom: ${room}\nNominal: ${nominal}\nWallet: ${selectedWallet}\nNomor: ${nomor}\nAN: ${an}\nWaktu: ${new Date().toLocaleString('id-ID')}`
+            text: '❌ REFUND REQUEST\nRoom: ' + room + '\nNominal: ' + nominal + '\nWallet: ' + selectedWallet + '\nNomor: ' + nomor + '\nAN: ' + an + '\nWaktu: ' + new Date().toLocaleString('id-ID')
         })
     });
     
@@ -809,31 +2028,15 @@ function closeRefund() {
     document.getElementById('refund-modal').style.display = 'none';
 }
 
-// Image Upload
-function kirimGambar(input) {
-    const file = input.files[0];
-    if(!file) return;
-    
-    const ref = storage.ref('img/' + Date.now() + '.jpg');
-    ref.put(file).then(() => {
-        ref.getDownloadURL().then(url => {
-            db.ref('rooms/' + room + '/messages').push({
-                dari: nama,
-                url: url,
-                tipe: 'img',
-                waktu: new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})
-            });
-        });
-    });
-}
-
 function infoRoom() {
-    alert(`Room: ${room}\nNominal: ${nominal}\nTipe: ${tipe}\nRole: ${role}`);
+    alert('Room: ' + room + '\nNominal: ' + nominal + '\nTipe: ' + tipe + '\nRole: ' + role + '\nNama: ' + nama);
 }
 
-// Init
+// INIT
 showPage('home');
 </script>
 
 </body>
 </html>
+
+    
