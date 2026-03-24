@@ -1,1 +1,839 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rekber MC - AryanzUtama</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<!-- PAGE 1: HOME -->
+<div id="page-home" class="page active-page">
+    <div class="banner-wrap">
+        <img src="https://res.cloudinary.com/dtdodhqqi/image/upload/v1766772767/IMG-20251128-WA0091_ldbe9l.jpg" class="banner-img">
+        <div class="banner-dark"></div>
+        <div class="banner-text">
+            <h1>Rekber MC</h1>
+            <p>Transaksi Aman & Terpercaya</p>
+        </div>
+    </div>
+
+    <div class="home-body">
+        <div class="profile-box">
+            <img src="https://res.cloudinary.com/dtdodhqqi/image/upload/v1766845910/IMG-20251128-WA0094_1_rrrhdn.jpg" class="prof-ava">
+            <div class="prof-info">
+                <h2>AryanzUtama</h2>
+                <span class="verif-badge">✓ Verified</span>
+            </div>
+        </div>
+
+        <div class="menu-box">
+            <p class="menu-label">Pilih Peran</p>
+            
+            <button class="menu-item buyer" onclick="goBuyer()">
+                <div class="item-icon">🛒</div>
+                <div class="item-text">
+                    <b>Buyer</b>
+                    <span>Pembeli</span>
+                </div>
+                <div class="item-arrow">›</div>
+            </button>
+
+            <button class="menu-item seller" onclick="goSeller()">
+                <div class="item-icon">🏪</div>
+                <div class="item-text">
+                    <b>Seller</b>
+                    <span>Penjual</span>
+                </div>
+                <div class="item-arrow">›</div>
+            </button>
+        </div>
+
+        <div class="stats-box">
+            <div class="stat">
+                <b>100%</b>
+                <span>Aman</span>
+            </div>
+            <div class="stat-line"></div>
+            <div class="stat">
+                <b>24/7</b>
+                <span>Support</span>
+            </div>
+            <div class="stat-line"></div>
+            <div class="stat">
+                <b>2-5%</b>
+                <span>Fee</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="powered" onclick="openAdmin()">
+        PoweredByAryanzUtama
+    </div>
+</div>
+
+<!-- PAGE 2: BUYER FORM -->
+<div id="page-buyer" class="page">
+    <div class="nav-bar">
+        <button onclick="goHome()" class="nav-btn">‹ Back</button>
+        <span>Buyer</span>
+    </div>
+    <div class="form-wrap">
+        <div class="form-head">
+            <div class="form-icon">🛒</div>
+            <h2>Masuk sebagai Buyer</h2>
+        </div>
+        <div class="input-box">
+            <label>Nama</label>
+            <input type="text" id="b-name" placeholder="Nama lengkap" oninput="checkBuyer()">
+        </div>
+        <div class="input-box">
+            <label>WhatsApp</label>
+            <input type="tel" id="b-wa" placeholder="08xxxxxxxxxx" oninput="checkBuyer()">
+        </div>
+        <div class="input-box">
+            <label>Kode Room</label>
+            <input type="number" id="b-code" placeholder="6 digit" oninput="checkBuyer()">
+        </div>
+        <button id="btn-b" class="main-btn" onclick="joinBuyer()" disabled>Masuk Room</button>
+    </div>
+</div>
+
+<!-- PAGE 3: SELLER FORM -->
+<div id="page-seller" class="page">
+    <div class="nav-bar">
+        <button onclick="goHome()" class="nav-btn">‹ Back</button>
+        <span>Seller</span>
+    </div>
+    <div class="form-wrap seller-bg">
+        <div class="form-head">
+            <div class="form-icon">🏪</div>
+            <h2>Buat Room Baru</h2>
+        </div>
+        <div class="input-box">
+            <label>Nama Seller</label>
+            <input type="text" id="s-name" placeholder="Nama seller" oninput="checkSeller()">
+        </div>
+        <div class="input-box">
+            <label>Nominal Transaksi</label>
+            <input type="text" id="s-nom" placeholder="50000" onkeyup="formatUang()">
+            <div class="uang-text" id="uang">Rp0</div>
+        </div>
+        <div class="input-box">
+            <label>Tipe</label>
+            <div class="type-btns">
+                <button onclick="setTipe('INC')" id="t-inc" class="t-btn">INC</button>
+                <button onclick="setTipe('EXC')" id="t-exc" class="t-btn">EXC</button>
+            </div>
+        </div>
+        <div class="input-box">
+            <label>WhatsApp</label>
+            <input type="tel" id="s-wa" placeholder="08xxxxxxxxxx" oninput="checkSeller()">
+        </div>
+        <button id="btn-s" class="main-btn green" onclick="buatRoom()" disabled>Buat Room</button>
+
+        <div id="hasil-room" class="hasil-box" style="display:none;">
+            <div class="kode-label">ROOM CODE</div>
+            <div class="kode-angka" id="kode">000000</div>
+            <button class="copy-btn" onclick="salinKode()">📋 Salin Kode</button>
+            <button class="main-btn" onclick="masukSeller()">Masuk Room</button>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE 4: ADMIN LOGIN -->
+<div id="page-admin-login" class="page admin-bg">
+    <div class="admin-modal">
+        <div class="adm-icon">🔐</div>
+        <h3>Admin Access</h3>
+        <input type="password" id="adm-pass" placeholder="Password">
+        <button class="main-btn" onclick="cekAdmin()">Masuk</button>
+        <button class="batal-btn" onclick="goHome()">Batal</button>
+    </div>
+</div>
+
+<!-- PAGE 5: ADMIN DASHBOARD -->
+<div id="page-admin-dash" class="page">
+    <div class="nav-bar">
+        <button onclick="goHome()" class="nav-btn">‹ Logout</button>
+        <span>Admin Panel</span>
+    </div>
+    <div class="admin-container">
+        <h2 style="margin-bottom: 20px; color: #007AFF;">Semua Room Aktif</h2>
+        <div id="admin-room-list" class="room-list"></div>
+    </div>
+</div>
+
+<!-- PAGE 6: CHAT -->
+<div id="page-chat" class="page">
+    <div class="chat-head">
+        <button onclick="goHome()" class="back-chat">‹</button>
+        <img src="https://res.cloudinary.com/dtdodhqqi/image/upload/v1766845910/IMG-20251128-WA0094_1_rrrhdn.jpg" class="chat-ava">
+        <div class="chat-info">
+            <span id="chat-nom">Rp0</span>
+            <span id="chat-tipe" class="tipe-badge">INC</span>
+        </div>
+        <button class="menu-chat" onclick="infoRoom()">•••</button>
+    </div>
+
+    <div class="chat-bg" onclick="tutupMenu()">
+        <div id="chat-msgs" class="msg-list"></div>
+    </div>
+
+    <div id="payment-section" style="display:none;" class="payment-container">
+        <div class="payment-box">
+            <div class="payment-header">𝙿𝙰𝚈𝙼𝙴𝙽𝚃 𝚁𝚎𝚔𝙱𝚎𝚛 𝚋𝚢 𝙰𝚛𝚢𝚊𝚗𝚣𝚄𝚝𝚊𝚖𝚊</div>
+            <div class="payment-list">
+                *List Mc _AryanzUtama_*\n- 0-15𝙆 ~ 3𝙆 \n- 16-100𝙆 ~ 5𝙆\n- 101-250𝙆 ~ 10𝙆\n- 251-500𝙆 ~ 15𝙆\n- 𝘿𝙎𝙏
+            </div>
+            <div class="payment-detail">
+                <div class="pay-row">
+                    <span>𝘿𝘼𝙉𝘼 : 089588037479</span>
+                    <button class="copy-small" onclick="copyText('089588037479')">Salin</button>
+                </div>
+                <div class="pay-an">𝘼/𝙉 : 𝙉𝙞 𝙆𝙤𝙢𝙖𝙣𝙜</div>
+                
+                <div class="pay-row" style="margin-top:10px;">
+                    <span>𝙂𝙤𝙥𝙖𝙮 : 0895329660340</span>
+                    <button class="copy-small" onclick="copyText('0895329660340')">Salin</button>
+                </div>
+                <div class="pay-an">𝘼/𝙉 : 𝘼𝙧𝙮𝙖𝙣𝙯𝙐𝙩𝙖𝙢𝙖</div>
+                
+                <div class="pay-row" style="margin-top:10px;">
+                    <span>𝙌𝙍𝙄𝙎 : 𝘿𝙄 𝘼𝙏𝘼𝙎</span>
+                    <button class="copy-small" onclick="showQRIS()">Lihat QRIS</button>
+                </div>
+            </div>
+            <div class="payment-note">
+                *NOTE* ❗\n- _SERTAKAN BUKTI TF_\n- _JUAL AKUN? HUB ADMIN_\n- _SALAH TF? TANGGUNG JAWAB SENDIRI_
+            </div>
+        </div>
+    </div>
+
+    <div class="input-float">
+        <div class="blur-bg"></div>
+        <div class="input-row">
+            <button class="btn-clip" onclick="document.getElementById('file-in').click()">📎</button>
+            <input type="file" id="file-in" hidden accept="image/*" onchange="kirimGambar(this)">
+            <div class="input-only">
+                <input type="text" id="msg-in" placeholder="Pesan" onkeypress="if(event.key==='Enter')kirimPesan()">
+            </div>
+            <button class="btn-kirim" onclick="kirimPesan()">➤</button>
+        </div>
+    </div>
+</div>
+
+<!-- QRIS MODAL -->
+<div id="qris-modal" class="modal" style="display:none;">
+    <div class="modal-back" onclick="closeQRIS()"></div>
+    <div class="modal-content">
+        <img src="https://res.cloudinary.com/dtdodhqqi/image/upload/v1766779896/IMG-20251222-WA0068_thougk.jpg" class="qris-img">
+        <button class="main-btn" onclick="downloadQRIS()">💾 Simpan Foto</button>
+        <button class="batal-btn" onclick="closeQRIS()">Tutup</button>
+    </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div id="ctx-menu" class="ctx-menu" style="display:none;">
+    <div class="ctx-back" onclick="tutupMenu()"></div>
+    <div class="ctx-box">
+        <button onclick="editPesan()">✏️ Edit Pesan</button>
+        <button onclick="hapusPesan()" class="red">🗑 Hapus Pesan</button>
+        <div class="ctx-line"></div>
+        <button onclick="tutupMenu()">Batal</button>
+    </div>
+</div>
+
+<!-- SPAM DETECTION MODAL -->
+<div id="spam-modal" class="spam-modal" style="display:none;">
+    <div class="spam-content">
+        <h3>⚠️ Spam Terdeteksi</h3>
+        <p>Chat terlalu cepat (5+ dalam 3 detik)</p>
+        <div class="spam-options">
+            <button class="spam-btn" onclick="handleSpamOption('lanjut')">Lanjutkan?</button>
+            <button class="spam-btn" onclick="handleSpamOption('batal')">TRX Batal?</button>
+            <button class="spam-btn" onclick="handleSpamOption('bagi')">Bagi Dua?</button>
+            <button class="spam-btn" onclick="handleSpamOption('masalah')">Masalah Akun?</button>
+        </div>
+    </div>
+</div>
+
+<!-- REFUND MODAL -->
+<div id="refund-modal" class="modal" style="display:none;">
+    <div class="modal-back" onclick="closeRefund()"></div>
+    <div class="modal-content refund-form">
+        <h3>Format Refund</h3>
+        <input type="text" id="refund-nomor" placeholder="Nomor e-wallet tujuan">
+        <input type="text" id="refund-an" placeholder="Atas Nama">
+        <div class="wallet-select">
+            <label class="wallet-opt"><input type="radio" name="wallet" value="Dana" onchange="selectWallet(this)"> Dana</label>
+            <label class="wallet-opt"><input type="radio" name="wallet" value="Gopay" onchange="selectWallet(this)"> Gopay</label>
+            <label class="wallet-opt"><input type="radio" name="wallet" value="QRIS" onchange="selectWallet(this)"> QRIS</label>
+            <label class="wallet-opt"><input type="radio" name="wallet" value="Ovo" onchange="selectWallet(this)"> Ovo</label>
+            <label class="wallet-opt"><input type="radio" name="wallet" value="SeaBank" onchange="selectWallet(this)"> SeaBank</label>
+        </div>
+        <button class="main-btn" onclick="submitRefund()">Selesai, Tinggal TF</button>
+        <button class="batal-btn" onclick="closeRefund()">Batal</button>
+    </div>
+</div>
+
+<!-- TELEGRAM NOTIF MODAL -->
+<div id="notif-modal" class="modal" style="display:none;">
+    <div class="modal-back" onclick="closeNotif()"></div>
+    <div class="modal-content notif-box">
+        <h4>🔔 Notif Telegram (Simulasi)</h4>
+        <p id="notif-text">AryanzUtama sedang ada mc...</p>
+        <div class="notif-actions" id="notif-actions">
+            <button class="main-btn green" onclick="confirmPayment(true)">Masuk</button>
+            <button class="main-btn red" onclick="confirmPayment(false)">Ngga</button>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
+<script>
+// Config Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDpQhIcitZwMMhQIHhpB9rp_k0EpBJT-2k",
+    authDomain: "chat-real-time-32576.firebaseapp.com",
+    databaseURL: "https://chat-real-time-32576-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "chat-real-time-32576",
+    storageBucket: "chat-real-time-32576.appspot.com",
+    messagingSenderId: "21431357525",
+    appId: "1:21431357525:web:5a32eb1ae3f59a485e04dc"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const storage = firebase.storage();
+
+const BOT_TOKEN = "8672339759:AAF_jy2iB5xZlHh6843s-8RkukvJ5-yROto";
+const CHAT_ID = "7129085772";
+
+let role = '', nama = '', room = '', tipe = '', nominal = '', wa = '';
+let msgIdSelect = null, tekanLama, editMode = false;
+let msgCount = 0, lastMsgTime = Date.now(), chatLocked = false;
+let selectedWallet = '';
+let isAdmin = false;
+
+// Navigation
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => {
+        p.style.display = 'none';
+        p.classList.remove('active-page');
+    });
+    const el = document.getElementById('page-' + id);
+    if(el) {
+        el.style.display = 'block';
+        setTimeout(() => el.classList.add('active-page'), 10);
+    }
+}
+
+function goHome() {
+    if(isAdmin) {
+        isAdmin = false;
+        role = '';
+    }
+    showPage('home');
+}
+
+function goBuyer() { showPage('buyer'); }
+function goSeller() { showPage('seller'); }
+function openAdmin() { showPage('admin-login'); }
+
+// Format Uang
+function formatUang() {
+    let v = document.getElementById('s-nom').value.replace(/\D/g, '');
+    document.getElementById('s-nom').value = v;
+    nominal = v ? 'Rp' + parseInt(v).toLocaleString('id-ID') : 'Rp0';
+    document.getElementById('uang').textContent = nominal;
+    checkSeller();
+}
+
+function setTipe(t) {
+    tipe = t;
+    document.querySelectorAll('.t-btn').forEach(b => b.classList.remove('aktif'));
+    document.getElementById('t-' + t.toLowerCase()).classList.add('aktif');
+    checkSeller();
+}
+
+function checkBuyer() {
+    let n = document.getElementById('b-name').value;
+    let w = document.getElementById('b-wa').value;
+    let c = document.getElementById('b-code').value;
+    document.getElementById('btn-b').disabled = !(n && w && c.length === 6);
+}
+
+function checkSeller() {
+    let n = document.getElementById('s-name').value;
+    let m = document.getElementById('s-nom').value;
+    let w = document.getElementById('s-wa').value;
+    document.getElementById('btn-s').disabled = !(n && m && w && tipe);
+}
+
+// Buat Room
+function buatRoom() {
+    nama = document.getElementById('s-name').value;
+    room = String(Math.floor(100000 + Math.random() * 900000));
+    wa = document.getElementById('s-wa').value;
+    
+    document.getElementById('kode').textContent = room;
+    document.getElementById('hasil-room').style.display = 'block';
+    
+    const roomData = {
+        info: { nominal, tipe, seller: nama, wa: wa, created: Date.now() },
+        messages: {}
+    };
+    
+    db.ref('rooms/' + room).set(roomData);
+    
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: `🏪 NEW SELLER\nNama: ${nama}\nNominal: ${nominal}\nTipe: ${tipe}\nRoom: ${room}\nWaktu: ${new Date().toLocaleString('id-ID')}`
+        })
+    });
+}
+
+function salinKode() {
+    navigator.clipboard.writeText(room);
+    alert('Kode disalin: ' + room);
+}
+
+// Join Buyer
+function joinBuyer() {
+    nama = document.getElementById('b-name').value;
+    room = document.getElementById('b-code').value;
+    wa = document.getElementById('b-wa').value;
+    
+    db.ref('rooms/' + room).once('value', s => {
+        if(s.exists()) {
+            let i = s.val().info;
+            nominal = i.nominal;
+            tipe = i.tipe;
+            
+            db.ref('rooms/' + room + '/buyer').set({ name: nama, wa: wa });
+            masukChat('buyer', true);
+            
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: `🛒 NEW BUYER\nNama: ${nama}\nRoom: ${room}\nWaktu: ${new Date().toLocaleString('id-ID')}`
+                })
+            });
+        } else {
+            alert('Room tidak ditemukan!');
+        }
+    });
+}
+
+function masukSeller() {
+    masukChat('seller', false);
+}
+
+// Admin Functions
+function cekAdmin() {
+    if(document.getElementById('adm-pass').value === 'khansa') {
+        isAdmin = true;
+        loadAdminRooms();
+        showPage('admin-dash');
+    } else {
+        alert('Password salah!');
+    }
+}
+
+function loadAdminRooms() {
+    db.ref('rooms').once('value', snapshot => {
+        const list = document.getElementById('admin-room-list');
+        list.innerHTML = '';
+        const now = Date.now();
+        const threeDays = 3 * 24 * 60 * 60 * 1000;
+        
+        snapshot.forEach(child => {
+            const roomId = child.key;
+            const data = child.val();
+            const created = data.info.created || 0;
+            
+            if(now - created > threeDays) {
+                db.ref('rooms/' + roomId).remove();
+                return;
+            }
+            
+            const div = document.createElement('div');
+            div.className = 'room-item';
+            div.innerHTML = `
+                <div class="room-info">
+                    <b>Room ${roomId}</b>
+                    <span>${data.info.nominal} - ${data.info.tipe}</span>
+                    <small>Seller: ${data.info.seller}</small>
+                </div>
+                <button class="main-btn small" onclick="joinAsAdmin('${roomId}')">Masuk</button>
+            `;
+            list.appendChild(div);
+        });
+    });
+}
+
+function joinAsAdmin(roomId) {
+    room = roomId;
+    role = 'admin';
+    isAdmin = true;
+    nama = 'AryanzUtama';
+    
+    db.ref('rooms/' + room).once('value', s => {
+        const i = s.val().info;
+        nominal = i.nominal;
+        tipe = i.tipe;
+        showPage('chat');
+        document.getElementById('payment-section').style.display = 'none';
+        initChat();
+    });
+}
+
+// Chat System
+function masukChat(r, isBuyerJoin) {
+    role = r;
+    showPage('chat');
+    
+    if(r === 'buyer' && isBuyerJoin) {
+        document.getElementById('payment-section').style.display = 'block';
+        setTimeout(() => sendPaymentFormat(), 1000);
+    } else {
+        document.getElementById('payment-section').style.display = 'none';
+    }
+    
+    initChat();
+}
+
+function initChat() {
+    document.getElementById('chat-nom').textContent = nominal;
+    document.getElementById('chat-tipe').textContent = tipe;
+    document.getElementById('chat-msgs').innerHTML = '';
+    
+    db.ref('rooms/' + room + '/messages').on('child_added', s => {
+        tampilPesan(s.key, s.val());
+    });
+    
+    if(role === 'seller') {
+        setTimeout(() => {
+            sendBotMessage(`Halo ${nama}! 👋\nSaya Admin MC.\n💰 ${nominal}\n📌 ${tipe}\n🔑 ${room}`);
+        }, 500);
+    }
+}
+
+function sendBotMessage(text) {
+    db.ref('rooms/' + room + '/messages').push({
+        dari: 'AryanzUtama',
+        text: text,
+        waktu: new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}),
+        tipe: 'text'
+    });
+}
+
+function sendPaymentFormat() {
+    const text = `𝙿𝙰𝚈𝙼𝙴𝙽𝚃 𝚁𝚎𝚔𝙱𝚎𝚛 𝚋𝚢 𝙰𝚛𝚢𝚊𝚗𝚣𝚄𝚝𝚊𝚖𝚊\n\n*List Mc _AryanzUtama_*\n- 0-15𝙆 ~ 3𝙆 \n- 16-100𝙆 ~ 5𝙆\n- 101-250𝙆 ~ 10𝙆\n- 251-500𝙆 ~ 15𝙆\n- 𝘿𝙎𝙏\n___________________________\n𝘿𝘼𝙉𝘼 : 089588037479\n𝘼/𝙉 : 𝙉𝙞 𝙆𝙤𝙢𝙖𝙣𝙜\n___________________________\n𝙂𝙤𝙥𝙖𝙮 : 0895329660340\n𝘼/𝙉 : 𝘼𝙧𝙮𝙖𝙣𝙯𝙐𝙩𝙖𝙢𝙖\n___________________________\n𝙌𝙍𝙄𝙎 : 𝘿𝙄 𝘼𝙏𝘼𝙎\n___________________________\n\n*NOTE* ❗\n- _SERTAKAN BUKTI TF  TIDAK ADA BUKTI TF?, TIDAK AKAN DI LANJUT KAN_ \n- _JUAL AKUN?, BELI AKUN?, TAWARIN KE ADMIN SAJA_\n- _SALAH TRANSFER? TANGGUNG JAWAB SENDIRI_\n\nPoweredByAryanzUtama`;
+sendBotMessage( text ) ;
+  }
+  // PART 2 START - Bubble Class & Chat Functions
+
+function tampilPesan(key, m) {
+    const list = document.getElementById('chat-msgs');
+    const div = document.createElement('div');
+    
+    // BUBBLE CLASS LOGIC (iPhone Style)
+    let bubbleClass = 'in';
+    if(m.dari === 'AryanzUtama' || m.dari === nama) bubbleClass = 'out';
+    if(m.system) bubbleClass = 'system';
+    
+    div.className = `bubble ${bubbleClass}`;
+    if(!m.system) div.dataset.id = key;
+    
+    // Long press for edit/delete (iPhone style)
+    if(!m.system && (m.dari === nama || (isAdmin && m.dari !== 'AryanzUtama'))) {
+        div.onmousedown = () => { tekanLama = setTimeout(()=>bukaMenu(key, m),600); };
+        div.onmouseup = () => clearTimeout(tekanLama);
+        div.ontouchstart = () => { tekanLama = setTimeout(()=>bukaMenu(key, m),600); };
+        div.ontouchend = () => clearTimeout(tekanLama);
+    }
+    
+    const w = m.waktu || new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+    
+    if(m.tipe === 'img') {
+        div.innerHTML = `<img src="${m.url}" class="chat-img" onclick="window.open('${m.url}')">`;
+    } else if(m.hapus) {
+        div.className = 'bubble system';
+        div.style.alignSelf = 'flex-end';
+        div.innerHTML = '<div class="hapus-text">🗑 Pesan dihapus</div>';
+    } else {
+        const pengirim = (m.dari !== nama && !m.system) ? `<div class="pengirim">${m.dari}</div>` : '';
+        const check = (m.dari === nama) ? '<i>✓✓</i>' : '';
+        const edited = m.edited ? '<span style="font-size:10px;opacity:0.6"> (edited)</span>' : '';
+        div.innerHTML = `${pengirim}<div class="isi">${m.text}${edited}</div><div class="waktu">${w} ${check}</div>`;
+    }
+    
+    list.appendChild(div);
+    list.scrollTop = list.scrollHeight;
+    
+    // Spam detection (5+ msg in 3 sec)
+    if(m.dari === nama && !m.system) {
+        const now = Date.now();
+        if(now - lastMsgTime < 3000) {
+            msgCount++;
+            if(msgCount >= 5) showSpamModal();
+        } else {
+            msgCount = 1;
+            lastMsgTime = now;
+        }
+    }
+}
+
+// QRIS Functions
+function showQRIS() {
+    document.getElementById('qris-modal').style.display = 'block';
+}
+
+function closeQRIS() {
+    document.getElementById('qris-modal').style.display = 'none';
+}
+
+function downloadQRIS() {
+    const link = document.createElement('a');
+    link.href = 'https://res.cloudinary.com/dtdodhqqi/image/upload/v1766779896/IMG-20251222-WA0068_thougk.jpg';
+    link.download = 'QRIS_AryanzUtama.jpg';
+    link.click();
+}
+
+function copyText(text) {
+    navigator.clipboard.writeText(text);
+    alert('Nomor disalin: ' + text);
+}
+
+// Context Menu (iPhone Style)
+function bukaMenu(id, m) {
+    if(chatLocked) return;
+    msgIdSelect = id;
+    editMode = false;
+    document.getElementById('ctx-menu').style.display = 'block';
+}
+
+function tutupMenu() {
+    document.getElementById('ctx-menu').style.display = 'none';
+    msgIdSelect = null;
+}
+
+function hapusPesan() {
+    if(!msgIdSelect) return;
+    db.ref('rooms/' + room + '/messages/' + msgIdSelect).update({
+        hapus: true,
+        text: null
+    });
+    tutupMenu();
+}
+
+function editPesan() {
+    if(!msgIdSelect) return;
+    db.ref('rooms/' + room + '/messages/' + msgIdSelect).once('value', s => {
+        const data = s.val();
+        if(data) {
+            const newText = prompt('Edit pesan:', data.text);
+            if(newText && newText.trim()) {
+                db.ref('rooms/' + room + '/messages/' + msgIdSelect).update({
+                    text: newText.trim(),
+                    edited: true
+                });
+            }
+        }
+    });
+    tutupMenu();
+}
+
+// Kirim Pesan
+function kirimPesan() {
+    if(chatLocked) {
+        alert('Chat terkunci sementara (spam detection)');
+        return;
+    }
+    
+    const inp = document.getElementById('msg-in');
+    const txt = inp.value.trim();
+    if(!txt) return;
+    
+    // Check keywords for payment confirmation
+    const keywords = ['c', 'cek', 'chek', 'msk', 'masuk', 'msuk', 'suk'];
+    const isCek = keywords.some(k => txt.toLowerCase().includes(k));
+    
+    db.ref('rooms/' + room + '/messages').push({
+        dari: nama,
+        text: txt,
+        waktu: new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}),
+        tipe: 'text'
+    });
+    
+    inp.value = '';
+    
+    // If buyer send cek/payment confirmation
+    if(role === 'buyer' && isCek) {
+        setTimeout(() => {
+            sendBotMessage('AryanzUtama sedang cek saldo mohon tunggu jangan spam ya\nPoweredByAryanzUtama');
+        }, 500);
+        
+        setTimeout(() => {
+            document.getElementById('notif-text').textContent = 
+                `AryanzUtama sedang ada mc dengan nominal ${nominal} ${tipe}. Apakah saldo sudah masuk?`;
+            document.getElementById('notif-modal').style.display = 'block';
+        }, 1000);
+    }
+}
+
+function confirmPayment(masuk) {
+    document.getElementById('notif-modal').style.display = 'none';
+    
+    if(masuk) {
+        const rules = `*PAYMENT MASUK* ‼️✅\n\n*_Ruls_* ‼️\n- _Pastikan harga mc sepakat dengan seller dan buyer Harga mc di larang berubah ‼️, Berubah? denda 1k_\n- _batas mc 12 Jam melebihi itu? Ku reff ke buyer, pikir kids masa ceinin sampe 12 jam kasian buyer 🗿_\n- _Mc batal? fee tetep kepotong_\n- Mc batal? harus di setujui dengan seller and buyer, *TIDAK MAIN HAKIM SENDIRI !*\n- _gausa buru-buru jual beli akun di bawa santai aja, buru-buru ? gua kick di grup, curiga mau ngerip wkwk_\n- _tf sesuai nomor, salah nomor? tanggung jwb sendiri_\n- _Admin slowres?, sabar anjay dikira yang mc elu doang, banyak gua kan femes🤭, aamiin_\n*___________________________*\n\n*KRITIK AND SARAN DISINI* 👇🏻\n*Link :* _blm siap_\n*All platfrom AryanzUtama :*\nhttps://afarrrj3-gif.github.io/InFoAryanzUtama/\n\n*Stay Amanah AryanzUtama*`;
+        
+        sendBotMessage(rules);
+        
+        // Show contact seller button
+        setTimeout(() => {
+            db.ref('rooms/' + room + '/info').once('value', s => {
+                const sellerWa = s.val().wa;
+                const div = document.createElement('div');
+                div.className = 'bubble system';
+                div.innerHTML = `<button class="main-btn" onclick="window.open('https://wa.me/62${sellerWa}?text=Halo gua dah tf ke AryanzUtama mana data nya? bisa kah di ceinin agar lebih mudah?')">Hubungi Seller untuk Data Akun</button>`;
+                document.getElementById('chat-msgs').appendChild(div);
+            });
+        }, 1000);
+    } else {
+        sendBotMessage('Saldo tidak masuk hubungi AryanzUtama untuk melanjutkan');
+        setTimeout(() => {
+            const div = document.createElement('div');
+            div.className = 'bubble system';
+            div.innerHTML = `<button class="main-btn" onclick="window.open('https://wa.me/6289509506039?text=Apakah saldo saya tidak masuk?')">Nomor Admin</button>`;
+            document.getElementById('chat-msgs').appendChild(div);
+        }, 500);
+    }
+}
+
+function closeNotif() {
+    document.getElementById('notif-modal').style.display = 'none';
+}
+
+// Spam Detection
+function showSpamModal() {
+    chatLocked = true;
+    document.getElementById('spam-modal').style.display = 'block';
+    setTimeout(() => {
+        chatLocked = false;
+    }, 3000);
+}
+
+function handleSpamOption(opt) {
+    document.getElementById('spam-modal').style.display = 'none';
+    chatLocked = false;
+    
+    if(opt === 'lanjut') {
+        sendBotMessage('Chat dilanjutkan. Mohon tidak spam.');
+    } else if(opt === 'batal') {
+        if(role === 'buyer') {
+            sendBotMessage('Menunggu persetujuan seller untuk batal...');
+            setTimeout(() => {
+                const div = document.createElement('div');
+                div.className = 'bubble system';
+                div.innerHTML = `<button class="main-btn red" onclick="initCancel()">Batalkan TRX</button>`;
+                document.getElementById('chat-msgs').appendChild(div);
+            }, 500);
+        } else {
+            alert('Hanya buyer yang bisa menginisiasi pembatalan!');
+        }
+    } else if(opt === 'bagi') {
+        sendBotMessage('Fitur sedang di kembangkan oleh AryanzUtama');
+    } else if(opt === 'masalah') {
+        sendBotMessage('Fitur sedang di kembangkan oleh AryanzUtama');
+    }
+}
+
+function initCancel() {
+    if(role !== 'buyer') {
+        alert('Hanya buyer yang bisa menginisiasi pembatalan!');
+        return;
+    }
+    document.getElementById('refund-modal').style.display = 'block';
+}
+
+function selectWallet(radio) {
+    selectedWallet = radio.value;
+    document.querySelectorAll('.wallet-opt').forEach(l => l.classList.remove('active'));
+    radio.parentElement.classList.add('active');
+}
+
+function submitRefund() {
+    const nomor = document.getElementById('refund-nomor').value;
+    const an = document.getElementById('refund-an').value;
+    
+    if(!nomor || !an || !selectedWallet) {
+        alert('Lengkapi semua data!');
+        return;
+    }
+    
+    if(role !== 'buyer') {
+        alert('Hanya buyer yang bisa mengisi form refund!');
+        return;
+    }
+    
+    sendBotMessage('TRX BATAL ‼️ FEE TETEP KEPOTONG\n\n*Format trx batal AryanzUtama*\n____________________________\n*Nomor e-wallet tujuan* : ' + nomor + '\n*Atas nama* : ' + an + '\n' + selectedWallet + ' : ✅\n____________________________\n\n*PERHATIAN* ‼️\n_Tf e-wallet selain dana di kenakan biaya 1k ‼️_');
+    
+    sendBotMessage('Saldo sedang di transfer oleh AryanzUtama tolong gausa spam nanti akan di balas secepatnya, spam? kick!');
+    
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: `❌ REFUND REQUEST\nRoom: ${room}\nNominal: ${nominal}\nWallet: ${selectedWallet}\nNomor: ${nomor}\nAN: ${an}\nWaktu: ${new Date().toLocaleString('id-ID')}`
+        })
+    });
+    
+    closeRefund();
+}
+
+function closeRefund() {
+    document.getElementById('refund-modal').style.display = 'none';
+}
+
+// Image Upload
+function kirimGambar(input) {
+    const file = input.files[0];
+    if(!file) return;
+    
+    const ref = storage.ref('img/' + Date.now() + '.jpg');
+    ref.put(file).then(() => {
+        ref.getDownloadURL().then(url => {
+            db.ref('rooms/' + room + '/messages').push({
+                dari: nama,
+                url: url,
+                tipe: 'img',
+                waktu: new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})
+            });
+        });
+    });
+}
+
+function infoRoom() {
+    alert(`Room: ${room}\nNominal: ${nominal}\nTipe: ${tipe}\nRole: ${role}`);
+}
+
+// Init
+showPage('home');
+</script>
+
+</body>
+</html>
